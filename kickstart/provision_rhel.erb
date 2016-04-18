@@ -1,15 +1,12 @@
 <%#
 kind: provision
-name: Kickstart RHEL default
+name: OSC - Kickstart RHEL default
 oses:
 - RedHat
 %>
 <%#
 This template accepts the following parameters:
-- lang: string (default="en_US.UTF-8")
 - selinux: string (default="enforcing")
-- keyboard: string (default="us")
-- time-zone: string (default="UTC")
 - http-proxy: string (default="")
 - http-proxy-port: string (default="")
 - force-puppet: boolean (default=false)
@@ -34,9 +31,9 @@ This template accepts the following parameters:
 %>
 install
 <%= @mediapath %><%= proxy_string %>
-lang <%= @host.params['lang'] || 'en_US.UTF-8' %>
+lang en_US.UTF-8
 selinux --<%= @host.params['selinux'] || 'enforcing' %>
-keyboard <%= @host.params['keyboard'] || 'us' %>
+keyboard us
 skipx
 
 <% subnet = @host.subnet -%>
@@ -48,36 +45,18 @@ skipx
 network --bootproto <%= dhcp ? 'dhcp' : "static --ip=#{@host.ip} --netmask=#{subnet.mask} --gateway=#{subnet.gateway} --nameserver=#{[subnet.dns_primary, subnet.dns_secondary].select(&:present?).join(',')}" %> --hostname <%= @host %><%= os_major >= 6 ? " --device=#{@host.mac}" : '' -%>
 
 rootpw --iscrypted <%= root_pass %>
-<% if @host.param_true?('disable-firewall') -%>
-firewall --disable
-<% else -%>
 firewall --<%= os_major >= 6 ? 'service=' : '' %>ssh
-<% end -%>
-authconfig --useshadow --passalgo=sha256 --kickstart
-timezone --utc <%= @host.params['time-zone'] || 'UTC' %>
+authconfig --useshadow --passalgo=sha512 --kickstart
+timezone --utc America/New_York
 <% if os_major > 4 -%>
 services --disabled gpm,sendmail,cups,pcmcia,isdn,rawdevices,hpoj,bluetooth,openibd,avahi-daemon,avahi-dnsconfd,hidd,hplip,pcscd
 <% end -%>
 
-<% if realm_compatible && @host.info['parameters']['realm'] && @host.realm && @host.realm.realm_type == 'Active Directory' -%>
-# One-time password will be requested at install time. Otherwise, $HOST[OTP] is used as a placeholder value.
-realm join --one-time-password='<%= @host.otp || "$HOST[OTP]" %>' <%= @host.realm %>
-<% end -%>
-
-<% if os_major > 4 -%>
 repo --name="EPEL" --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-<%= @host.operatingsystem.major %>&arch=<%= @host.architecture %><%= proxy_string %>
-<% if puppet_enabled -%>
-<% if @host.param_true?('enable-puppetlabs-repo') -%>
 repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/products/<%= @host.architecture %><%= proxy_string %>
 repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/dependencies/<%= @host.architecture %><%= proxy_string %>
-<% end -%>
-<% if @host.param_true?('enable-puppetlabs-pc1-repo') -%>
-repo --name=puppetlabs-pc1 --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/PC1/<%= @host.architecture %><%= proxy_string %>
-<% end -%>
-<% end -%>
-<% end -%>
 
-bootloader --location=mbr --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet' %>" <%= grub_pass %>
+bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet' %>" <%= grub_pass %>
 <% if os_major == 5 -%>
 key --skip
 <% end -%>
@@ -97,23 +76,8 @@ dhclient
 ntp
 wget
 @Core
-<% if os_major >= 6 -%>
-redhat-lsb-core
-<% end -%>
-<% if os_major > 4 -%>
 epel-release
-<% end -%>
-<% if puppet_enabled -%>
-<% if @host.param_true?('enable-puppetlabs-repo') -%>
 puppetlabs-release
-<% end -%>
-<% if @host.param_true?('enable-puppetlabs-pc1-repo') -%>
-puppetlabs-release-pc1
-<% end -%>
-<% end -%>
-<% if salt_enabled %>
-salt-minion
-<% end -%>
 <%= section_end -%>
 
 <% if @dynamic -%>
