@@ -1,0 +1,26 @@
+<%#
+kind: snippet
+name: OSC-redhat_register
+%>
+#
+#   subscription_manager_org = <org name> (organization name, if using
+#                                          SAM/Katello)
+#
+#   subscription_manager_repos = <repos> (comma separated list of repos (like
+#                                         rhel-6-server-optional-rpms) to
+#                                         enable after registration)
+#
+# Set this parameter regardless of which registration method you're using:
+#
+#   activation_key = <key>      (activation key string, not needed if using
+#                                subscription-manager with hosted RHN)
+#
+
+subscription-manager register --org="<%= @host.params['subscription_manager_org'] %>" --activationkey="<%= @host.params['activation_key'] %>"
+subscription-manager attach --auto
+subscription-manager refresh
+<% @host.params['subscription_manager_repos'].split(',').each do |repo| -%>
+subscription-manager repos --enable <%= repo %>
+<% end -%>
+
+# End Red Hat Registration Snippet
