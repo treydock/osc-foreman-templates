@@ -7,7 +7,7 @@ oses:
 %>
 <%#
 This template accepts the following parameters:
-- selinux: string (default="enforcing")
+- kickstart_selinux: string (default="enforcing")
 - http-proxy: string (default="")
 - http-proxy-port: string (default="")
 - force-puppet: boolean (default=false)
@@ -33,7 +33,7 @@ This template accepts the following parameters:
 install
 <%= @mediapath %><%= proxy_string %>
 lang en_US.UTF-8
-selinux --<%= @host.params['selinux'] || 'enforcing' %>
+selinux --<%= @host.params['kickstart_selinux'] || 'enforcing' %>
 keyboard us
 skipx
 
