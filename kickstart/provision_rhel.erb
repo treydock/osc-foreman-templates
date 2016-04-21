@@ -78,7 +78,8 @@ ntp
 wget
 @Core
 epel-release
-puppetlabs-release
+# WORKAROND: Use specific version as release 12 seems to not work
+puppetlabs-release-<%= @host.operatingsystem.major %>-11.noarch
 <%= section_end -%>
 
 <% if @dynamic -%>
