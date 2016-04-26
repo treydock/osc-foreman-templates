@@ -32,7 +32,7 @@ LABEL linux
     <% elsif @host.operatingsystem.name == 'Fedora' and @host.operatingsystem.major.to_i > 16 -%>
     APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ks.device=bootif network ks.sendmac <%= options %>
     <% elsif @host.operatingsystem.name != 'Fedora' and @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %>
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0
     <% else -%>
     APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %>
     <% end -%>

@@ -62,7 +62,11 @@ repo --name="EPEL" --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=
 repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/products/<%= @host.architecture %><%= proxy_string %>
 repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/dependencies/<%= @host.architecture %><%= proxy_string %>
 
+<% if os_major == 7 -%>
+bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet net.ifnames=0 biosdevname=0' %>" <%= grub_pass %>
+<% else -%>
 bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet' %>" <%= grub_pass %>
+<% end -%>
 <% if os_major == 5 -%>
 key --skip
 <% end -%>
