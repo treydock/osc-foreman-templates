@@ -44,7 +44,7 @@ skipx
 <% else -%>
 <% dhcp = !@static -%>
 <% end -%>
-network --bootproto <%= dhcp ? 'dhcp' : "static --ip=#{@host.ip} --netmask=#{subnet.mask} --gateway=#{subnet.gateway} --nameserver=#{[subnet.dns_primary, subnet.dns_secondary].select(&:present?).join(',')}" %> --hostname <%= @host %><%= os_major >= 6 ? " --device=#{@host.mac}" : '' -%>
+network --bootproto <%= "static --ip=#{@host.ip} --netmask=#{subnet.mask} --gateway=#{subnet.gateway} --nameserver=#{[subnet.dns_primary, subnet.dns_secondary].select(&:present?).join(',')}" %> --hostname <%= @host %><%= os_major >= 6 ? " --device=#{@host.mac}" : '' -%>
 
 rootpw --iscrypted <%= root_pass %>
 firewall --<%= os_major >= 6 ? 'service=' : '' %>ssh
@@ -142,16 +142,8 @@ yum -t -y update
 
 <%= snippet('remote_execution_ssh_keys') %>
 
-<% if chef_enabled %>
-<%= snippet 'chef_client' %>
-<% end -%>
-
 <% if puppet_enabled %>
 <%= snippet 'puppet_setup' %>
-<% end -%>
-
-<% if salt_enabled %>
-<%= snippet 'saltstack_setup' %>
 <% end -%>
 
 sync
