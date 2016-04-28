@@ -1,40 +1,17 @@
 <%#
 kind: snippet
-name: kickstart_networking_setup
+name: OSC-kickstart_networking_setup
 description: this will configure your host networking, it configures your primary interface as well
     as other configures NICs. It supports physical, VLAN and Alias interfaces. It's intended to be
     called from %post in your kickstart template. Note that this snippet can be used with Foreman 1.7
     and later
 %>
-<% subnet = @host.subnet -%>
-<% dhcp = subnet.dhcp_boot_mode? -%>
-
-<% if @host.respond_to?(:has_primary_interface?) %>
-<%# Foreman 1.7 - primary interface contained in @host %>
-# primary interface
-real=`ip -o link | grep <%= @host.mac -%> | awk '{print $2;}' | sed s/://`
-<% if @host.has_primary_interface? %>
-cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$real
-BOOTPROTO="<%= dhcp ? 'dhcp' : 'none' -%>"
-<% unless dhcp -%>
-IPADDR="<%= @host.ip -%>"
-NETMASK="<%= subnet.mask -%>"
-<% if !subnet.gateway.nil? && !subnet.gateway.empty? -%>
-GATEWAY="<%= subnet.gateway %>"
-<% end -%>
-<% end -%>
-DEVICE=$real
-HWADDR="<%= @host.mac -%>"
-ONBOOT=yes
-EOF
-<% end -%>
-<% end -%>
 
 <% bonded_interfaces = [] %>
 <% bonds = @host.bond_interfaces %>
 <% bonds.each do |bond| %>
 <% subnet = bond.subnet -%>
-<% dhcp = subnet.nil? ? false : subnet.dhcp_boot_mode? -%>
+<% dhcp = subnet.nil? ? false : (subnet.dhcp_boot_mode? && subnet.dhcp?) -%>
 # <%= bond.identifier %> interface
 real="<%= bond.identifier -%>"
 cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$real
@@ -64,7 +41,7 @@ EOF
 <% virtual = interface.virtual? -%>
 <% vlan = virtual && (subnet.has_vlanid? || interface.vlanid.present?) -%>
 <% alias_type = virtual && !subnet.nil? && !subnet.has_vlanid? && interface.identifier.include?(':') -%>
-<% dhcp = !subnet.nil? && subnet.dhcp_boot_mode? -%>
+<% dhcp = !subnet.nil? && subnet.dhcp_boot_mode? && subnet.dhcp? -%>
 
 # <%= interface.identifier %> interface
 real=`ip -o link | grep <%= interface.inheriting_mac -%> | awk '{print $2;}' | sed s/:$//`
@@ -110,7 +87,7 @@ EOF
 <% virtual = interface.virtual? -%>
 <% vlan = virtual && (subnet.has_vlanid? || interface.vlanid.present?) -%>
 <% alias_type = virtual && !subnet.has_vlanid? && interface.identifier.include?(':') -%>
-<% dhcp = subnet.dhcp_boot_mode? -%>
+<% dhcp = subnet.dhcp_boot_mode? && subnet.dhcp? -%>
 
 # <%= interface.identifier %> interface
 real=`ip -o link | grep <%= interface.inheriting_mac -%> | awk '{print $2;}' | sed s/:$//`

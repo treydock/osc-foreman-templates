@@ -40,7 +40,7 @@ skipx
 
 <% subnet = @host.subnet -%>
 <% if subnet.respond_to?(:dhcp_boot_mode?) -%>
-<% dhcp = subnet.dhcp_boot_mode? && !@static -%>
+<% dhcp = subnet.dhcp_boot_mode? && !@static && subnet.dhcp? -%>
 <% else -%>
 <% dhcp = !@static -%>
 <% end -%>
@@ -115,7 +115,7 @@ exec < /dev/tty3 > /dev/tty3
 /usr/bin/chvt 3
 (
 <% if subnet.respond_to?(:dhcp_boot_mode?) -%>
-<%= snippet 'kickstart_networking_setup' %>
+<%= snippet 'OSC-kickstart_networking_setup' %>
 <% end -%>
 
 # Update URLs used for repositories
@@ -132,10 +132,6 @@ echo "updating system time"
 
 <%= snippet 'OSC-redhat_register' %>
 
-<% if @host.info['parameters']['realm'] && @host.realm && @host.realm.realm_type == 'FreeIPA' -%>
-<%= snippet 'freeipa_register' %>
-<% end -%>
-
 <% if proxy_uri -%>
 # Yum proxy
 echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
@@ -143,8 +139,6 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 
 # update all the base packages from the updates repository
 yum -t -y update
-
-<%= snippet('remote_execution_ssh_keys') %>
 
 <% if puppet_enabled %>
 <%= snippet 'puppet_setup' %>
