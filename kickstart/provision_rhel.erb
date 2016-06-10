@@ -4,6 +4,7 @@ name: OSC - Kickstart RHEL default
 oses:
 - RedHat
 - RHEL Server
+- CentOS
 %>
 <%#
 This template accepts the following parameters:
@@ -134,7 +135,9 @@ echo "updating system time"
 /usr/sbin/ntpdate -sub <%= @host.params['ntp-server'] || '0.fedora.pool.ntp.org' %>
 /usr/sbin/hwclock --systohc
 
+<% if @host.operatingsystem.name != 'CentOS' -%>
 <%= snippet 'OSC-redhat_register' %>
+<% end -%>
 
 <% if proxy_uri -%>
 # Yum proxy
