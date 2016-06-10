@@ -1,0 +1,11 @@
+<%#
+kind: snippet
+name: OSC - PXELinux shared
+%>
+
+<%# This template contains static boot menu items used by PXELinux_default and PXELinux_local %>
+
+LABEL centos-7-livecd
+        KERNEL centos-7-livecd/vmlinuz0
+        APPEND rootflags=loop initrd=centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image quiet  rhgb rd.luks=0 rd.md=0 rd.dm=0
+        MENU LABEL CentOS 7 LiveCD
