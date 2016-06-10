@@ -16,11 +16,9 @@ LABEL local
      MENU LABEL (local)
      MENU DEFAULT
      LOCALBOOT 0
-
 <%= snippet "OSC - PXELinux shared" %>
-
-<%= snippet "pxelinux_discovery" %>
-
+<%# pxelinux_discovery references undefined variable %>
+<%#= snippet "pxelinux_discovery" %>
 <% for profile in @profiles -%>
 LABEL <%= "#{profile[:template]} - #{profile[:hostgroup]}" %>
      KERNEL <%= profile[:hostgroup].operatingsystem.kernel(profile[:hostgroup].architecture) %>
