@@ -44,10 +44,12 @@ EOF
 <% dhcp = !subnet.nil? && subnet.dhcp_boot_mode? && subnet.dhcp? -%>
 
 # <%= interface.identifier %> interface
-real=`ip -o link | grep <%= interface.inheriting_mac -%> | awk '{print $2;}' | sed s/:$//`
+#real=`ip -o link | grep <%= interface.inheriting_mac -%> | awk '{print $2;}' | sed s/:$//`
 <% if virtual -%>
-real=`echo <%= interface.identifier -%> | sed s/<%= interface.attached_to -%>/$real/`
+#real=`echo <%= interface.identifier -%> | sed s/<%= interface.attached_to -%>/$real/`
 <% end -%>
+# Have to rely on Foreman data for identifier since bond already exists and screws with MAC addresses
+real=<%= interface.identifier %>
 
 # ifcfg files are ignored by NM if their name contains colons so we convert colons to underscore
 <% if alias_type -%>
