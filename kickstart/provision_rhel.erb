@@ -45,7 +45,23 @@ skipx
 <% else -%>
 <% dhcp = !@static -%>
 <% end -%>
-network --bootproto <%= dhcp ? 'dhcp' : "static --ip=#{@host.ip} --netmask=#{subnet.mask} --gateway=#{subnet.gateway} --nameserver=#{[subnet.dns_primary, subnet.dns_secondary].select(&:present?).join(',')}" %> --hostname <%= @host %><%= os_major >= 6 ? " --device=#{@host.mac}" : '' -%>
+<% 
+provision_interface = @host.provision_interface
+if provision_interface.type == 'Nic::Bond'
+  bond_name = provision_interface.identifier
+  slaves = provision_interface.attached_devices
+  bondopts = provision_interface.bond_options.split(/\s/)
+  bondopts << "mode=#{primary_interface.mode}"
+  bondopts = bondopts.join(',')
+  network_device = bond_name
+  bond = "--bondslaves=#{slaves} --bondopts=#{bondopts}"
+else
+  network_device = @host.mac
+  bond = ""
+end
+-%>
+
+network --bootproto <%= dhcp ? 'dhcp' : "static --ip=#{@host.ip} --netmask=#{subnet.mask} --gateway=#{subnet.gateway} --nameserver=#{[subnet.dns_primary, subnet.dns_secondary].select(&:present?).join(',')}" %> --hostname <%= @host %><%= os_major >= 6 ? " --device=#{network_device}" : '' -%> <%= bond %>
 
 rootpw --iscrypted <%= root_pass %>
 <% if os_major >= 7 -%>

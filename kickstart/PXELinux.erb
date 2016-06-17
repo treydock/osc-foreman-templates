@@ -29,7 +29,7 @@ oses:
     slaves = primary_interface.attached_devices
     bondopts = primary_interface.bond_options.split(/\s/)
     bondopts << "mode=#{primary_interface.mode}"
-    bondopts = bondopts.join(';')
+    bondopts = bondopts.join(',')
     bond = "bond=#{name}:#{slaves}:#{bondopts}"
   else
     bond = ""
