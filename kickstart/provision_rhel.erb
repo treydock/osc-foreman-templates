@@ -51,7 +51,7 @@ if provision_interface.type == 'Nic::Bond'
   bond_name = provision_interface.identifier
   slaves = provision_interface.attached_devices
   bondopts = provision_interface.bond_options.split(/\s/)
-  bondopts << "mode=#{primary_interface.mode}"
+  bondopts << "mode=#{provision_interface.mode}"
   bondopts = bondopts.join(',')
   network_device = bond_name
   bond = "--bondslaves=#{slaves} --bondopts=#{bondopts}"
