@@ -20,20 +20,34 @@ oses:
   if @host.params['blacklist']
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
   end
+  options << "console=ttyS0,115200"
   options = options.join(' ')
+
+  primary_interface = @host.primary_interface
+  if primary_interface.type == 'Nic::Bond'
+    name = primary_interface.identifier
+    slaves = primary_interface.attached_devices
+    bondopts = primary_interface.bond_options.split(/\s/)
+    bondopts << "mode=#{primary_interface.mode}"
+    bondopts = bondopts.join(';')
+    bond = "bond=#{name}:#{slaves}:#{bondopts}"
+  else
+    bond = ""
+  end
 -%>
 
 DEFAULT linux
+SERIAL 0 115200
 
 LABEL linux
     KERNEL <%= @kernel %>
     <% if @host.operatingsystem.name.match(/.*atomic.*/i) %>
     APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision') %> repo=<%= @host.operatingsystem.medium_uri(@host) %> ks.device=bootif network ks.sendmac <%= options %>
     <% elsif @host.operatingsystem.name == 'Fedora' and @host.operatingsystem.major.to_i > 16 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ks.device=bootif network ks.sendmac <%= options %>
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ks.device=bootif network ks.sendmac <%= options %> <%= bond %>
     <% elsif @host.operatingsystem.name != 'Fedora' and @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
     <% else -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %>
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <% end -%>
     IPAPPEND 2
