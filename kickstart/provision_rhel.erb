@@ -163,6 +163,11 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 # update all the base packages from the updates repository
 yum -t -y update
 
+<% if provision_interface.type == 'Nic::Bond' -%>
+# Remove bond#_slave_# interfaces as they cause problems after first boot
+rm -f /etc/sysconfig/network-scripts/ifcfg-<%= bond_name %>_slave*
+<% end -%>
+
 <% if puppet_enabled %>
 <%= snippet 'puppet_setup' %>
 <% end -%>

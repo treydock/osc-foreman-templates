@@ -20,7 +20,9 @@ oses:
   if @host.params['blacklist']
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
   end
-  options << "console=ttyS0,115200"
+  if @host.provider == 'BareMetal'
+    options << "console=ttyS0,115200"
+  end
   options = options.join(' ')
 
   primary_interface = @host.primary_interface
@@ -37,7 +39,9 @@ oses:
 -%>
 
 DEFAULT linux
+<% if @host.provider == 'BareMetal' -%>
 SERIAL 0 115200
+<% end -%>
 
 LABEL linux
     KERNEL <%= @kernel %>
