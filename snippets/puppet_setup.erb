@@ -56,4 +56,4 @@ fi
 <% end -%>
 <% end -%>
 
-<%= bin_path %>/puppet agent --config <%= etc_path %>/puppet.conf --onetime --tags no_such_tag <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
+<%= bin_path %>/puppet agent --config <%= etc_path %>/puppet.conf --onetime --tags mofed <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
