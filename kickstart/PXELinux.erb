@@ -49,14 +49,10 @@ DEFAULT linux
 <% end -%>
 
 LABEL linux
-    KERNEL <%= @kernel %>
-    <% if @host.operatingsystem.name.match(/.*atomic.*/i) %>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision') %> repo=<%= @host.operatingsystem.medium_uri(@host) %> ks.device=bootif network ks.sendmac <%= options %>
-    <% elsif @host.operatingsystem.name == 'Fedora' and @host.operatingsystem.major.to_i > 16 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ks.device=bootif network ks.sendmac <%= options %> <%= bond %>
-    <% elsif @host.operatingsystem.name != 'Fedora' and @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
+    KERNEL http://bootsrv1.ten.osc.edu/tftpboot/<%= @kernel %>
+    <% if @host.operatingsystem.major.to_i >= 7 -%>
+    APPEND initrd=http://bootsrv1.ten.osc.edu/tftpboot/<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
     <% else -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
+    APPEND initrd=http://bootsrv1.ten.osc.edu/tftpboot/<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <% end -%>
     IPAPPEND 2
