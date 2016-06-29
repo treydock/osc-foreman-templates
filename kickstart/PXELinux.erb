@@ -49,10 +49,10 @@ DEFAULT linux
 <% end -%>
 
 LABEL linux
-    KERNEL http://bootsrv1.ten.osc.edu/tftpboot/<%= @kernel %>
+    KERNEL <%= @kernel %>
     <% if @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=http://bootsrv1.ten.osc.edu/tftpboot/<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
     <% else -%>
-    APPEND initrd=http://bootsrv1.ten.osc.edu/tftpboot/<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
+    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <% end -%>
     IPAPPEND 2
