@@ -15,8 +15,10 @@ oses:
 # blacklist = module1, module2
 #   Blacklisted kernel modules
 #
-<%= snippet "OSC - include" %>
 <%
+  NFSROOT_HOSTGROUPS = [
+    'base/rw/owens',
+  ]
   append = []
   append << "initrd=#{@initrd}"
   append << "network ks.sendmac"
@@ -24,11 +26,13 @@ oses:
     append << "net.ifnames=0 biosdevname=0"
   end
 
-  if ['base/rw/owens'].include? @host.hostgroup.to_s
+  append << "root=/dev/nfs"
+
+  if ['base/rw/owens'].include? @host.hostgroup.to_s && @host.build?
+    append << "nfsroot=10.11.200.3:/owens_root_rhel72_0,vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
+    append << "ks=#{foreman_url('provision')}"
+  else
     append << "nfsroot=10.11.200.3:/owens_root_rhel72_0,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
-    if @host.build?
-      append << "ks=#{foreman_url('provision')}"
-    end
   end
 
   if @host.provider == 'BareMetal'
@@ -55,7 +59,7 @@ oses:
   append = append.join(' ')
 -%>
 
-<% if @host.hostgroup.present? && @nfsroot_hostgroups.include? @host.hostgroup.to_s -%>
+<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include?(@host.hostgroup.to_s) -%>
 LABEL nfsroot
     KERNEL <%= @kernel %>
     APPEND <%= append %>

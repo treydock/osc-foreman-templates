@@ -48,7 +48,7 @@ oses:
 -%>
 
 
-<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include? @host.hostgroup.to_s -%>
+<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include?(@host.hostgroup.to_s) -%>
 DEFAULT nfsroot
 <% else -%>
 DEFAULT linux
