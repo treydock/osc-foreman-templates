@@ -1,0 +1,64 @@
+<%#
+kind: snippet
+name: OSC - PXELinux NFS root
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+# Supported host/hostgroup parameters:
+#
+# blacklist = module1, module2
+#   Blacklisted kernel modules
+#
+<%= snippet "OSC - include" %>
+<%
+  append = []
+  append << "initrd=#{@initrd}"
+  append << "network ks.sendmac"
+  if @host.operatingsystem.major.to_i >= 7
+    append << "net.ifnames=0 biosdevname=0"
+  end
+
+  if ['base/rw/owens'].include? @host.hostgroup.to_s
+    append << "nfsroot=10.11.200.3:/owens_root_rhel72_0,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
+    if @host.build?
+      append << "ks=#{foreman_url('provision')}"
+    end
+  end
+
+  if @host.provider == 'BareMetal'
+    if @host.params['console_tty']
+      append << "console=#{@host.params['console_tty']},115200"
+    else
+      append << "console=ttyS0,115200"
+    end
+  end
+
+  primary_interface = @host.primary_interface
+  if primary_interface.type == 'Nic::Bond'
+    name = primary_interface.identifier
+    slaves = primary_interface.attached_devices
+    bondopts = primary_interface.bond_options.split(/\s/)
+    bondopts << "mode=#{primary_interface.mode}"
+    bondopts = bondopts.join(',')
+    bond = "bond=#{name}:#{slaves}:#{bondopts}"
+  else
+    bond = ""
+  end
+  append << bond
+
+  append = append.join(' ')
+-%>
+
+<% if @host.hostgroup.present? && @nfsroot_hostgroups.include? @host.hostgroup.to_s -%>
+LABEL nfsroot
+    KERNEL <%= @kernel %>
+    APPEND <%= append %>
+    IPAPPEND 2
+
+<% end -%>

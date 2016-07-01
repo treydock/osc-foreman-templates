@@ -16,6 +16,10 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
+  NFSROOT_HOSTGROUPS = [
+    'base/rw/owens',
+  ]
+
   options = []
   if @host.params['blacklist']
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
@@ -27,7 +31,6 @@ oses:
       options << "console=ttyS0,115200"
     end
   end
-  options = options.join(' ')
 
   primary_interface = @host.primary_interface
   if primary_interface.type == 'Nic::Bond'
@@ -40,13 +43,18 @@ oses:
   else
     bond = ""
   end
+
+  options = options.join(' ')
 -%>
 
+
+<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include? @host.hostgroup.to_s -%>
+DEFAULT nfsroot
+<% else -%>
 DEFAULT linux
-<% if @host.provider == 'BareMetal' -%>
-# Not need it seems
-#SERIAL 0 115200
 <% end -%>
+
+<%= snippet "OSC - PXELinux NFS root" %>
 
 LABEL linux
     KERNEL <%= @kernel %>
