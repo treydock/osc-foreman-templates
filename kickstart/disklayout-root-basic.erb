@@ -1,0 +1,15 @@
+<%#
+kind: ptable
+name: OSC - root - basic
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+
+ignoredisk --only-use=sda
+zerombr
+clearpart --all --initlabel --linux --drives=sda
+part swap --recommended
+part / --fstype=xfs --grow
