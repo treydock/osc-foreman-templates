@@ -16,8 +16,11 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
-  NFSROOT_HOSTGROUPS = [
-    'base/rw/owens',
+  NFSROOT_RO_HOSTGROUPS = [
+  
+  ]
+  NFSROOT_RW_HOSTGROUPS = [
+    'base/rw/owens'
   ]
 
   options = []
@@ -48,7 +51,9 @@ oses:
 -%>
 
 
-<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include?(@host.hostgroup.to_s) -%>
+<% if @host.hostgroup.present? &&
+      (NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s) ||
+         (NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s) && ! @host.build?)) -%>
 DEFAULT nfsroot
 <% else -%>
 DEFAULT linux
