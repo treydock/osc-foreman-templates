@@ -11,6 +11,9 @@ name: PXELinux default local boot
   NFSROOT_RW_HOSTGROUPS = [
     'base/rw/owens'
   ]
+  NFSROOT_RO_HOSTS = [
+    'o0213.ten.osc.edu',
+  ]
 -%>
 DEFAULT menu
 PROMPT 0
@@ -18,7 +21,7 @@ MENU TITLE PXE Menu
 TIMEOUT 200
 TOTALTIMEOUT 6000
 <% if @host.hostgroup.present? &&
-      (NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s) ||
+      ((NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s) || NFSROOT_RO_HOSTS.include?(@host.name)) ||
          (NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s) && ! @host.build?)) -%>
 ONTIMEOUT nfsroot
 <% else -%>
