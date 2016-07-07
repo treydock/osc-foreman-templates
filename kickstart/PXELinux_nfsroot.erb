@@ -16,32 +16,41 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
-  NFSROOT_HOSTGROUPS = [
+  NFSROOT_RW_HOSTGROUPS = [
     'base/rw/owens',
+  ]
+  NFSROOT_RO_HOSTGROUPS = [
     'base/compute/owens',
     'base/login/owens',
   ]
   append = []
   append << "initrd=#{@initrd}"
-  append << "network ks.sendmac"
+  append << "network"
   if @host.operatingsystem.major.to_i >= 7
     append << "net.ifnames=0 biosdevname=0"
+    append << "root=nfs:10.11.200.3:/owens_root_rhel72_0,vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
   end
 
-  append << "root=/dev/nfs"
-
-  if ['base/rw/owens'].include?(@host.hostgroup.to_s) && @host.build?
-    append << "nfsroot=10.11.200.3:/owens_root_rhel72_0,vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
-    append << "ks=#{foreman_url('provision')}"
-  else
-    append << "nfsroot=10.11.200.3:/owens_root_rhel72_0,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
+  # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
+  if @host.hostgroup.present? && NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s)
+    append << "readonlyroot"
+  elsif @host.hostgroup.present? && NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s)
+    append << "noreadonlyroot"
   end
 
   if @host.provider == 'BareMetal'
+    append << "console=tty"
     if @host.params['console_tty']
       append << "console=#{@host.params['console_tty']},115200"
     else
       append << "console=ttyS0,115200"
+    end
+  end
+
+  # Disable Supervisor Mode Access Prevention on RHEL7 systems that are known to be broadwell
+  if @host.operatingsystem.major.to_i >= 7
+    if @host.hostgroup.present? && ['base/compute/owens', 'base/login/owens'].include?(@host.hostgroup.to_s)
+      append << "nosmap"
     end
   end
 
@@ -61,7 +70,7 @@ oses:
   append = append.join(' ')
 -%>
 
-<% if @host.hostgroup.present? && NFSROOT_HOSTGROUPS.include?(@host.hostgroup.to_s) -%>
+<% if @host.hostgroup.present? && (NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s) || NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s)) -%>
 LABEL nfsroot
     KERNEL <%= @kernel %>
     APPEND <%= append %>

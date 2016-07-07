@@ -31,6 +31,7 @@ oses:
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
   end
   if @host.provider == 'BareMetal'
+    append << "console=tty"
     if @host.params['console_tty']
       options << "console=#{@host.params['console_tty']},115200"
     else

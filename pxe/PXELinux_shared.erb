@@ -7,6 +7,7 @@ name: OSC - PXELinux shared
 # Account for case where this template is generated for PXELinux_default which is not associated to a host
 if @host.present?
   if @host.provider == 'BareMetal'
+    append << "console=tty"
     if @host.params['console_tty']
       console = "console=#{@host.params['console_tty']},115200"
     else
