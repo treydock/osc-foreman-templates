@@ -16,13 +16,13 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
-  NFSROOT_RO_HOSTGROUPS = [
+  @nfsroot_ro_hostgroups = [
   
   ]
-  NFSROOT_RW_HOSTGROUPS = [
+  @nfsroot_rw_hostgroups = [
     'base/rw/owens'
   ]
-  NFSROOT_RO_HOSTS = [
+  @nfsroot_ro_hosts = [
     'o0213.ten.osc.edu',
   ]
 
@@ -56,8 +56,8 @@ oses:
 
 
 <% if @host.hostgroup.present? &&
-      ((NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s) || NFSROOT_RO_HOSTS.include?(@host.name)) ||
-         (NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s) && ! @host.build?)) -%>
+      ((@nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s) || @nfsroot_ro_hosts.include?(@host.name)) ||
+         (@nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s) && ! @host.build?)) -%>
 DEFAULT nfsroot
 <% else -%>
 DEFAULT linux

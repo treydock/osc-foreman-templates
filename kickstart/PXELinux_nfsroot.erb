@@ -16,10 +16,10 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
-  NFSROOT_RW_HOSTGROUPS = [
+  @nfsroot_rw_hostgroups = [
     'base/rw/owens',
   ]
-  NFSROOT_RO_HOSTGROUPS = [
+  @nfsroot_ro_hostgroups = [
     'base/compute/owens',
     'base/login/owens',
   ]
@@ -32,9 +32,9 @@ oses:
   end
 
   # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
-  if @host.hostgroup.present? && NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s)
+  if @host.hostgroup.present? && @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)
     append << "readonlyroot"
-  elsif @host.hostgroup.present? && NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s)
+  elsif @host.hostgroup.present? && @nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s)
     append << "noreadonlyroot"
   end
 
@@ -70,7 +70,7 @@ oses:
   append = append.join(' ')
 -%>
 
-<% if @host.hostgroup.present? && (NFSROOT_RW_HOSTGROUPS.include?(@host.hostgroup.to_s) || NFSROOT_RO_HOSTGROUPS.include?(@host.hostgroup.to_s)) -%>
+<% if @host.hostgroup.present? && (@nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s) || @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)) -%>
 LABEL nfsroot
     KERNEL <%= @kernel %>
     APPEND <%= append %>
