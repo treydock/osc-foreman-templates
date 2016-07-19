@@ -16,13 +16,6 @@ oses:
 #   Blacklisted kernel modules
 #
 <%
-  @nfsroot_rw_hostgroups = [
-    'base/rw/owens',
-  ]
-  @nfsroot_ro_hostgroups = [
-    'base/compute/owens',
-    'base/login/owens',
-  ]
   append = []
   append << "initrd=#{@initrd}"
   append << "network"
@@ -74,10 +67,8 @@ oses:
   append = append.join(' ')
 -%>
 
-<% if @host.hostgroup.present? && (@nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s) || @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)) -%>
 LABEL nfsroot
     KERNEL <%= @kernel %>
     APPEND <%= append %>
+    MENU DEFAULT
     IPAPPEND 2
-
-<% end -%>

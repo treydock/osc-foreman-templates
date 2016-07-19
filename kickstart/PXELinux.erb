@@ -15,18 +15,8 @@ oses:
 # blacklist = module1, module2
 #   Blacklisted kernel modules
 #
+<%= snippet "OSC - include" %>
 <%
-  @nfsroot_ro_hostgroups = [
-  
-  ]
-  @nfsroot_rw_hostgroups = [
-    'base/rw/owens'
-  ]
-  @nfsroot_ro_hosts = [
-    'o0213.ten.osc.edu',
-    'o0214.ten.osc.edu',
-  ]
-
   options = []
   if @host.params['blacklist']
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
@@ -56,16 +46,15 @@ oses:
 -%>
 
 
-<% if @host.hostgroup.present? &&
-      ((@nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s) || @nfsroot_ro_hosts.include?(@host.name)) ||
-         (@nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s) && ! @host.build?)) -%>
+<% if @nfsroot -%>
 DEFAULT nfsroot
 <% else -%>
 DEFAULT linux
 <% end -%>
 
+<% if @nfsroot -%>
 <%= snippet "OSC - PXELinux NFS root" %>
-
+<% else -%>
 LABEL linux
     KERNEL <%= @kernel %>
     <% if @host.operatingsystem.major.to_i >= 7 -%>
@@ -74,3 +63,4 @@ LABEL linux
     APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <% end -%>
     IPAPPEND 2
+<% end -%>

@@ -64,9 +64,13 @@ class FakeNamespace
       ),
       :as_string => name,
       :subnet => FakeStruct.new(
-        :dhcp_boot_mode? => true
+        :dhcp_boot_mode? => true,
+        :dhcp? => true,
       ),
-      :mac => '00:00:00:00:00:01'
+      :mac => '00:00:00:00:00:01',
+      :provision_interface => FakeStruct.new(
+        :type => 'Nic::Managed',
+      ),
     )
   end
 
