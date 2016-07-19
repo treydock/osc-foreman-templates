@@ -31,7 +31,7 @@ else
 end
 
 if @host.hostgroup.present?
-  if @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)
+  if @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s) || @nfsroot_ro_hosts.include?(@host.name)
     @nfsroot_ro = true
     @nfsroot_rw = false
   elsif @nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s)
