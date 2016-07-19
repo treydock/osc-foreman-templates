@@ -33,9 +33,9 @@ oses:
 
   # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
   if @host.hostgroup.present? && @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)
-    append << "readonlyroot"
+    append << "ro readonlyroot"
   elsif @host.hostgroup.present? && @nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s)
-    append << "noreadonlyroot"
+    append << "rw noreadonlyroot"
   end
 
   if @host.provider == 'BareMetal'
@@ -53,6 +53,10 @@ oses:
       append << "nosmap"
     end
   end
+
+  append << "build=#{@host.build?}"
+  append << "rd.lvm=1 rd.lvm.vg=vg0 rd.md=0 rd.dm=0"
+
 
   primary_interface = @host.primary_interface
   if primary_interface.type == 'Nic::Bond'
