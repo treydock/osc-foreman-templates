@@ -30,4 +30,17 @@ else
   @nfsroot = false
 end
 
+if @host.hostgroup.present?
+  if @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)
+    @nfsroot_ro = true
+    @nfsroot_rw = false
+  elsif @nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s)
+    @nfsroot_ro = false
+    @nfsroot_rw = true
+  else
+    @nfsroot_ro = false
+    @nfsroot_rw = false
+  end
+end
+
 -%>

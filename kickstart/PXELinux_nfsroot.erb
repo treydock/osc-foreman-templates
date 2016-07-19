@@ -15,6 +15,7 @@ oses:
 # blacklist = module1, module2
 #   Blacklisted kernel modules
 #
+<%= snippet "OSC - include" %>
 <%
   append = []
   append << "initrd=#{@initrd}"
@@ -25,9 +26,9 @@ oses:
   end
 
   # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
-  if @host.hostgroup.present? && @nfsroot_ro_hostgroups.include?(@host.hostgroup.to_s)
+  if @nfsroot_ro
     append << "ro readonlyroot"
-  elsif @host.hostgroup.present? && @nfsroot_rw_hostgroups.include?(@host.hostgroup.to_s)
+  elsif @nfsroot_rw
     append << "rw noreadonlyroot"
   end
 
