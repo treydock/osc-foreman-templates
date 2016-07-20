@@ -1,7 +1,7 @@
 #!gpxe
 <%#
 kind: iPXE
-name: OSC - Kickstart default iPXE
+name: OSC - iPXE - Owens
 oses:
 - CentOS
 - Fedora
@@ -11,6 +11,7 @@ oses:
 <%= snippet "OSC - include" %>
 
 <%
+append = []
 if @nfsroot_ro
   append << "ro readonlyroot"
 elsif @nfsroot_rw
