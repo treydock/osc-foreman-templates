@@ -119,7 +119,7 @@ HWADDR="<%= interface.mac -%>"
 <% end -%>
 ONBOOT=yes
 <% if interface.respond_to?(:primary) && interface.primary -%>
-PEERDNS=yes
+PEERDNS=no
 PEERROUTES=yes
 <% if !dhcp && !subnet.dns_primary.nil? && !subnet.dns_primary.empty? -%>
 DNS1=<%= subnet.dns_primary %>
