@@ -1,0 +1,37 @@
+#!gpxe
+<%#
+kind: iPXE
+name: OSC - Kickstart default iPXE
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+<%= snippet "OSC - include" %>
+
+<%
+if @nfsroot_ro
+  append << "ro readonlyroot"
+elsif @nfsroot_rw
+  append << "rw noreadonlyroot"
+end
+
+append << "console=tty"
+if @host.params['console_tty']
+  append << "console=#{@host.params['console_tty']},115200"
+else
+  append << "console=ttyS0,115200"
+end
+
+append << "build=#{@host.build?}"
+append << "rd.lvm=1 rd.lvm.vg=vg0 rd.md=0 rd.dm=0"
+
+append = append.join(' ')
+
+-%>
+
+kernel <%= "#{@host.url_for_boot(:kernel)}" %> net.ifnames=0 biosdevname=0 network root=nfs:10.11.200.3:/owens_root_rhel72_0,vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536 ip=${netX/ip} netmask=${netX/netmask} gateway=${netX/gateway} dns=${dns} <%= append %>
+initrd <%= "#{@host.url_for_boot(:initrd)}" %>
+
+boot

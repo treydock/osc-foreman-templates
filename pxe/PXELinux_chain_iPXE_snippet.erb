@@ -1,6 +1,6 @@
 <%#
-kind: PXELinux
-name: PXELinux chain iPXE
+kind: snippet
+name: PXELinux chain iPXE - snippet
 %>
 <%#
 Chainboots iPXE/gPXE from PXELinux. Make sure the OS has iPXE template
@@ -10,5 +10,8 @@ associated and file ipxe.lkrn was copied in the TFTP directory (e.g. from
 For more info visit:
 http://projects.theforeman.org/projects/foreman/wiki/Fetch_boot_files_via_http_instead_of_TFTP
 %>
-DEFAULT linux
-<%= snippet "PXELinux chain iPXE - snippet" %>
+LABEL linux
+  KERNEL ipxe.lkrn
+  APPEND dhcp && chain <%= foreman_url('iPXE') %>
+  MENU DEFAULT
+  IPAPPEND 2
