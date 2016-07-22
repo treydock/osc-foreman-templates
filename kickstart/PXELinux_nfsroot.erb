@@ -18,11 +18,11 @@ oses:
 <%= snippet "OSC - include" %>
 <%
   append = []
-  append << "initrd=#{@initrd}"
+  append << "initrd=#{@nfsroot_initrd}"
   append << "network"
   if @host.operatingsystem.major.to_i >= 7
     append << "net.ifnames=0 biosdevname=0"
-    append << "root=nfs:10.11.200.3:/owens_root_rhel72_0,vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536"
+    append << "root=nfs:#{@nfsroot_host}:#{@nfsroot_path},#{@nfsroot_opts}"
   end
 
   # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
@@ -48,9 +48,7 @@ oses:
     end
   end
 
-  append << "build=#{@host.build?}"
   append << "rd.lvm=1 rd.lvm.vg=vg0 rd.md=0 rd.dm=0"
-
 
   primary_interface = @host.primary_interface
   if primary_interface.type == 'Nic::Bond'
@@ -69,7 +67,7 @@ oses:
 -%>
 
 LABEL nfsroot
-    KERNEL <%= @kernel %>
+    KERNEL <%= @nfsroot_kernel %>
     APPEND <%= append %>
     MENU DEFAULT
     IPAPPEND 2

@@ -18,6 +18,7 @@ oses:
 @nfsroot_ro_hosts = [
   'o0213.ten.osc.edu',
   'o0214.ten.osc.edu',
+  'o0215.ten.osc.edu',
   'o0706.ten.osc.edu',
   'o0809.ten.osc.edu',
 ]
@@ -41,6 +42,14 @@ if @host.hostgroup.present?
     @nfsroot_ro = false
     @nfsroot_rw = false
   end
+end
+
+if @nfsroot && @host.hostgroup.to_s =~ /owens/
+  @nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
+  @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'
+  @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
+  @nfsroot_kernel = @kernel
+  @nfsroot_initrd = @initrd
 end
 
 -%>
