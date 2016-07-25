@@ -18,7 +18,7 @@ oses:
 <%= snippet "OSC - include" %>
 <%
   append = []
-  append << "initrd=#{@nfsroot_initrd}"
+  append << "initrd=#{@tftp_boot_prefix}#{@nfsroot_initrd}"
   append << "network"
   if @host.operatingsystem.major.to_i >= 7
     append << "net.ifnames=0 biosdevname=0"
@@ -48,7 +48,7 @@ oses:
     end
   end
 
-  append << "rd.lvm=1 rd.lvm.vg=vg0 rd.md=0 rd.dm=0"
+  append << "rd.lvm=0 rd.md=0 rd.dm=0"
 
   primary_interface = @host.primary_interface
   if primary_interface.type == 'Nic::Bond'
@@ -67,7 +67,7 @@ oses:
 -%>
 
 LABEL nfsroot
-    KERNEL <%= @nfsroot_kernel %>
+    KERNEL <%= "#{@tftp_boot_prefix}#{@nfsroot_kernel}" %>
     APPEND <%= append %>
     MENU DEFAULT
     IPAPPEND 2

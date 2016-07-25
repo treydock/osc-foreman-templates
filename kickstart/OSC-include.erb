@@ -50,8 +50,14 @@ if @nfsroot && @host.hostgroup.to_s =~ /owens/
   @nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
   @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'
   @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
-  @nfsroot_kernel = "#{@tftp_boot_prefix}#{@kernel}"
-  @nfsroot_initrd = "#{@tftp_boot_prefix}#{@initrd}"
+  @nfsroot_kernel_version = @host.params['nfsroot_kernel_version']
+  if @nfsroot_kernel_version
+    @nfsroot_kernel = @host.params['nfsroot_kernel'] || "nfsroot/vmlinuz-#{@nfsroot_kernel_version}"
+    @nfsroot_initrd = @host.params['nfsroot_initrd'] || "nfsroot/initramfs-#{@nfsroot_kernel_version}.img"
+  else
+    @nfsroot_kernel = @host.params['nfsroot_kernel'] || @kernel
+    @nfsroot_initrd = @host.params['nfsroot_initrd'] || @initrd
+  end
 end
 
 -%>
