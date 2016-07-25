@@ -3,6 +3,7 @@ kind: snippet
 name: OSC - PXELinux shared
 %>
 <%# This template contains static boot menu items used by PXELinux_default and PXELinux_local %>
+<%= snippet "OSC - include" %>
 <%
 # Account for case where this template is generated for PXELinux_default which is not associated to a host
 console = []
@@ -19,11 +20,11 @@ end
 console = console.join(" ")
 -%>
 LABEL centos-7-livecd
-        KERNEL centos-7-livecd/vmlinuz0
-        APPEND rootflags=loop initrd=centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 net.ifnames=0 biosdevname=0 <%= console %>
+        KERNEL <%= @tftp_boot_prefix %>centos-7-livecd/vmlinuz0
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 net.ifnames=0 biosdevname=0 <%= console %>
         MENU LABEL CentOS 7 LiveCD
 
 LABEL centos-6-livecd
-        KERNEL centos-6-livecd/vmlinuz0
-        APPEND rootflags=loop initrd=centos-6-livecd/initrd0.img root=live:/centos6-live.iso rootfstype=auto ro liveimg nodiskmount nolvmmount rd_NO_LUKS rd_NO_MD rd_NO_DM <%= console %>
+        KERNEL <%= @tftp_boot_prefix %>centos-6-livecd/vmlinuz0
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-6-livecd/initrd0.img root=live:/centos6-live.iso rootfstype=auto ro liveimg nodiskmount nolvmmount rd_NO_LUKS rd_NO_MD rd_NO_DM <%= console %>
         MENU LABEL CentOS 6 LiveCD

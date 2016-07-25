@@ -56,11 +56,11 @@ DEFAULT linux
 <%= snippet "OSC - PXELinux NFS root" %>
 <% else -%>
 LABEL linux
-    KERNEL <%= @kernel %>
+    KERNEL <%= "#{@tftp_boot_prefix}#{@kernel}" %>
     <% if @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
+    APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
     <% else -%>
-    APPEND initrd=<%= @initrd %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
+    APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <% end -%>
     IPAPPEND 2
 <% end -%>

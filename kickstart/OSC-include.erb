@@ -9,6 +9,8 @@ oses:
 %>
 <%# This template defines useful variables to use else where %>
 <%
+@tftp_boot_prefix = @host.params['tftp_boot_prefix'] || ''
+
 @nfsroot_ro_hostgroups = [
 
 ]
@@ -48,8 +50,8 @@ if @nfsroot && @host.hostgroup.to_s =~ /owens/
   @nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
   @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'
   @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
-  @nfsroot_kernel = @kernel
-  @nfsroot_initrd = @initrd
+  @nfsroot_kernel = "#{@tftp_boot_prefix}#{@kernel}"
+  @nfsroot_initrd = "#{@tftp_boot_prefix}#{@initrd}"
 end
 
 -%>
