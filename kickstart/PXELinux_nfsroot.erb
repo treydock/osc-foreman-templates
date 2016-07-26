@@ -43,7 +43,7 @@ oses:
 
   # Disable Supervisor Mode Access Prevention on RHEL7 systems that are known to be broadwell
   if @host.operatingsystem.major.to_i >= 7
-    if @host.hostgroup.present? && ['base/compute/owens', 'base/login/owens'].include?(@host.hostgroup.to_s)
+    if @host.hostgroup.present? && ['base/owens/compute', 'base/owens/login'].include?(@host.hostgroup.to_s)
       append << "nosmap"
     end
   end
