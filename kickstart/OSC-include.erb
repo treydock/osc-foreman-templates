@@ -12,20 +12,14 @@ oses:
 @tftp_boot_prefix = @host.params['tftp_boot_prefix'] || ''
 
 @nfsroot_ro_hostgroups = [
-#  'base/owens/compute',
-#  'base/owens/login',
+  'base/owens/compute',
+  'base/owens/login',
 ]
 @nfsroot_rw_hostgroups = [
   'base/owens/rw'
 ]
 @nfsroot_ro_hosts = [
-  'o0213.ten.osc.edu',
-  'o0214.ten.osc.edu',
-  'o0215.ten.osc.edu',
-  'o0216.ten.osc.edu',
-  'o0218.ten.osc.edu',
-  'o0706.ten.osc.edu',
-  'o0809.ten.osc.edu',
+
 ]
 
 if @host.hostgroup.present? &&

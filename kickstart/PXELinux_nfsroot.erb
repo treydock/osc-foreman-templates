@@ -48,7 +48,7 @@ oses:
     end
   end
 
-  append << "rd.lvm=0 rd.md=0 rd.dm=0"
+  append << "rd.lvm=1 rd.md=0 rd.dm=0"
 
   primary_interface = @host.primary_interface
   if primary_interface.type == 'Nic::Bond'
