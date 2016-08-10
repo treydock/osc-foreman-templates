@@ -17,7 +17,7 @@ name: OSC-redhat_register
 #
 
 subscription-manager register --org="<%= @host.params['subscription_manager_org'] %>" --activationkey="<%= @host.params['activation_key'] %>"
-subscription-manager attach --auto
+subscription-manager attach --pool=<%= @host.params['subscription_manager_pool'] %>
 subscription-manager refresh
 <% @host.params['subscription_manager_repos'].split(',').each do |repo| -%>
 subscription-manager repos --enable <%= repo %>
