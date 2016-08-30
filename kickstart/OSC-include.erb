@@ -44,7 +44,7 @@ if @host.hostgroup.present?
 end
 
 if @nfsroot && @host.hostgroup.to_s =~ /owens/
-  @nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
+  @nfsroot_host   = @host.params['nfsroot_host'] || 'owens_root.ten.osc.edu'
   @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'
   @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
   @nfsroot_kernel_version = @host.params['nfsroot_kernel_version']
