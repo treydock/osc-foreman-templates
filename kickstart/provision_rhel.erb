@@ -161,7 +161,9 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 <% end -%>
 
 # update all the base packages from the updates repository
+<%- if @host.param_true?('kickstart-yum-update') -%>
 yum -t -y update
+<%- end -%>
 
 <% if provision_interface.type == 'Nic::Bond' -%>
 # Remove bond#_slave_# interfaces as they cause problems after first boot
