@@ -40,6 +40,14 @@ To start unit tests do something like:
 
     $ ruby -Itest test/kickstart/provision_test.rb 
 
+To run all tests
+
+    $ rake test
+
+To print debug output like rendered templates:
+
+    $ DEBUG=true rake test
+
 # Contributing
 
 Please fork and send a pull request. Thanks!

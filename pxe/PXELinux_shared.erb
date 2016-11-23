@@ -1,10 +1,13 @@
 <%#
 kind: snippet
 name: OSC - PXELinux shared
-%>
-<%# This template contains static boot menu items used by PXELinux_default and PXELinux_local %>
-<%= snippet "OSC - include" %>
-<%
+-%>
+<%# This template contains static boot menu items used by PXELinux_default and PXELinux_local -%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+<%= snippet "OSC - include" -%>
+<%-
 # Account for case where this template is generated for PXELinux_default which is not associated to a host
 console = []
 if @host.present?

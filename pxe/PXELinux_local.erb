@@ -1,10 +1,12 @@
 <%#
 kind: PXELinux
 name: PXELinux default local boot
-%>
-
-<%# This template has special name (do not change it) and it is used for booting already provisioned hosts. %>
-<%= snippet "OSC - include" %>
+-%>
+<%# This template has special name (do not change it) and it is used for booting already provisioned hosts. -%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+<%= snippet "OSC - include" -%>
 DEFAULT menu
 PROMPT 0
 MENU TITLE PXE Menu
@@ -15,16 +17,14 @@ ONTIMEOUT nfsroot
 <% else -%>
 ONTIMEOUT local
 <% end -%>
-
 <% if @nfsroot -%>
-<%= snippet "OSC - PXELinux NFS root" %>
+<%= snippet "OSC - PXELinux NFS root" -%>
 <%#= snippet "PXELinux chain iPXE - snippet" %>
 <% end -%>
-
 LABEL local
      MENU LABEL (local)
 <% if ! @nfsroot -%>
      MENU DEFAULT
 <% end -%>
      LOCALBOOT 0
-<%= snippet "OSC - PXELinux shared" %>
+<%= snippet "OSC - PXELinux shared" -%>

@@ -1,5 +1,12 @@
+require 'rubygems'
+gem 'minitest'
+require 'minitest/autorun'
+require 'minitest/reporters'
 require 'erb'
 require 'tempfile'
+require 'yaml'
+
+Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
 DISKLAYOUT = <<DL
 zerombr
@@ -7,6 +14,11 @@ clearpart --all --initlabel
 part / --fstype=ext4 --size=1024 --grow
 part swap  --recommended
 DL
+
+def debug
+  return true if ENV['DEBUG'] == 'true'
+  return false
+end
 
 class FakeStruct
   def initialize(hash)
@@ -33,12 +45,51 @@ class FakeStruct
   end
 end
 
+module TemplatesHelper
+  def render_erb(template, namespace)
+    namespace.template_name = template
+    erb = ::ERB.new(IO.read(template), nil, '-')
+    erb.filename = template
+    erb.result(namespace.instance_eval { binding })
+  end
+
+  def ksvalidator(version, kickstart)
+    ksvalidator_cmd = ENV['KSVALIDATOR'] || 'ksvalidator'
+    output = `#{ksvalidator_cmd} -v #{version} #{kickstart}`
+    [$?.to_i, output]
+  end
+
+  def validate_erb(template, namespace, ksversion)
+    t = Tempfile.new('community-templates-validate')
+    t.write(render_erb(template, namespace))
+    t.close
+    ksvalidator(ksversion, t.path)
+  ensure
+    t.unlink
+  end
+
+end
+
 class FakeNamespace
+  include ::TemplatesHelper
   attr_reader :root_pass, :grub_pass
-  def initialize(family, name, major, minor)
+  attr_accessor :template_name
+  def initialize(family, name, major, minor, hostgroup = 'base')
     @mediapath = 'url --url http://localhost/repo/xyz'
     @root_pass = '$1$redhat$9yxjZID8FYVlQzHGhasqW/'
     @grub_pass = 'blah'
+    @kernel = "boot/#{family}-#{major}.#{minor}-x86_64-vmlinuz"
+    @initrd = "boot/#{family}-#{major}.#{minor}-x86_64-initrd.img"
+    @dynamic = false
+    @static = false
+    case major
+    when '7'
+      kernel = '3.10.0-327.36.3.el7.x86_64'
+    when '6'
+      kernel = '2.6.32-573.35.2.el6.x86_64'
+    else
+      kernel = nil
+    end
     @host = FakeStruct.new(
       :operatingsystem => FakeStruct.new(
         :name => name,
@@ -71,11 +122,41 @@ class FakeNamespace
       :provision_interface => FakeStruct.new(
         :type => 'Nic::Managed',
       ),
+      :primary_interface => FakeStruct.new(
+        :type => 'Nic::Managed',
+      ),
+      :managed_interfaces => [],
+      :bond_interfaces => [],
+      :provider => 'BareMetal',
+      :hostgroup => FakeStruct.new(
+        :name => hostgroup,
+        :as_string => hostgroup,
+      ),
+      :puppet_ca_server => 'puppet',
+      :certname => name,
+      :name => name,
+      :environment => FakeStruct.new(
+        :name => 'production',
+        :as_string => 'production',
+      ),
+      :build? => false,
+      :params => {
+        'nfsroot_kernel_version' => kernel,
+      }
     )
   end
 
-  def snippet(*args)
-    ''
+  def snippet(snip)
+    test_dir = File.dirname(__FILE__)
+    root = File.absolute_path("#{test_dir}/../")
+    Dir.glob("#{root}/**/*.erb") do |erb|
+      extracted = IO.read(erb).match(/<%#(.+?).-?%>/m)
+      yaml = YAML.load(extracted[1])
+      next if yaml['kind'] != 'snippet'
+      if yaml['name'] == snip
+        return render_erb(erb, self)
+      end
+    end
   end
 
   def ks_console(*args)
@@ -87,32 +168,19 @@ class FakeNamespace
   end
 end
 
-module TemplatesHelper
-  def render_erb(template, namespace)
-    erb = ::ERB.new(IO.read(template), nil, '-')
-    erb.filename = template
-    erb.result(namespace.instance_eval { binding })
-  end
-
-  def ksvalidator(version, kickstart)
-    ksvalidator_cmd = ENV['KSVALIDATOR'] || 'ksvalidator'
-    output = `#{ksvalidator_cmd} -v #{version} #{kickstart}`
-    [$?.to_i, output]
-  end
-
-  def validate_erb(template, namespace, ksversion)
-    t = Tempfile.new('community-templates-validate')
-    t.write(render_erb(template, namespace))
-    t.close
-    ksvalidator(ksversion, t.path)
-  ensure
-    t.unlink
-  end
-
-end
-
 class String
   def blank?
     self !~ /[^[:space:]]/
+  end
+end
+
+# Pulled from Rails source
+class Object
+  def present?
+    !blank?
+  end
+
+  def blank?
+    respond_to?(:empty?) ? !!empty? : !self
   end
 end

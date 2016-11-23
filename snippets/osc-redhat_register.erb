@@ -15,11 +15,19 @@ name: OSC-redhat_register
 #   activation_key = <key>      (activation key string, not needed if using
 #                                subscription-manager with hosted RHN)
 #
-
+<%-
+case @host.operatingsystem.major.to_i
+when 7
+  default_repos = 'rhel-7-server-optional-rpms,rhel-7-server-supplementary-rpms,rhel-7-server-extras-rpms'
+when 6
+  default_repos = 'rhel-6-server-optional-rpms,rhel-6-server-supplementary-rpms'
+end
+subscription_manager_repos = @host.params['subscription_manager_repos'] || default_repos
+-%>
 subscription-manager register --org="<%= @host.params['subscription_manager_org'] %>" --activationkey="<%= @host.params['activation_key'] %>"
 subscription-manager attach --pool=<%= @host.params['subscription_manager_pool'] %>
 subscription-manager refresh
-<% @host.params['subscription_manager_repos'].split(',').each do |repo| -%>
+<% subscription_manager_repos.split(',').each do |repo| -%>
 subscription-manager repos --enable <%= repo %>
 <% end -%>
 

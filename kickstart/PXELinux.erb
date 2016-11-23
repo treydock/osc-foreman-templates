@@ -15,8 +15,11 @@ oses:
 # blacklist = module1, module2
 #   Blacklisted kernel modules
 #
-<%= snippet "OSC - include" %>
-<%
+# console_tty = value
+#   Console tty, ex: ttyS1, default: ttyS0
+#
+<%= snippet "OSC - include" -%>
+<%-
   options = []
   if @host.params['blacklist']
     options << "modprobe.blacklist=" + @host.params['blacklist'].gsub(' ', '')
@@ -44,23 +47,20 @@ oses:
 
   options = options.join(' ')
 -%>
-
-
-<% if @nfsroot -%>
+<%- if @nfsroot -%>
 DEFAULT nfsroot
-<% else -%>
+<%- else -%>
 DEFAULT linux
-<% end -%>
-
-<% if @nfsroot -%>
-<%= snippet "OSC - PXELinux NFS root" %>
-<% else -%>
+<%- end -%>
+<%- if @nfsroot -%>
+<%= snippet "OSC - PXELinux NFS root" -%>
+<%- else -%>
 LABEL linux
     KERNEL <%= "#{@tftp_boot_prefix}#{@kernel}" %>
-    <% if @host.operatingsystem.major.to_i >= 7 -%>
+    <%- if @host.operatingsystem.major.to_i >= 7 -%>
     APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
-    <% else -%>
+    <%- else -%>
     APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
-    <% end -%>
+    <%- end -%>
     IPAPPEND 2
 <% end -%>
