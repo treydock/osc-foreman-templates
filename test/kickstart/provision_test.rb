@@ -57,4 +57,16 @@ class TestKickstartProvision < MiniTest::Test
     validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/rw')
   end
 
+  def test_nfsroot_ro_oakley_compute
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/compute')
+  end
+
+  def test_nfsroot_ro_oakley_login
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/login')
+  end
+
+  def test_nfsroot_rw_oakley
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/rw')
+  end
+
 end
