@@ -45,4 +45,16 @@ class TestKickstartProvision < MiniTest::Test
     validate_template('pxe/PXELinux_local.erb', '7', '2', 'base/owens/rw')
   end
 
+  def test_nfsroot_ro_ruby_compute
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/compute')
+  end
+
+  def test_nfsroot_ro_ruby_login
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/login')
+  end
+
+  def test_nfsroot_rw_ruby
+    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/rw')
+  end
+
 end
