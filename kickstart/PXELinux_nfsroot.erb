@@ -99,6 +99,5 @@ LABEL nfsroot
 LABEL <%= label %>
     KERNEL <%= "#{@tftp_boot_prefix}#{@nfsroot_kernel}" %>
     APPEND <%= append %> <%= extra_append %>
-    MENU DEFAULT
     IPAPPEND 2
 <%- end -%>
