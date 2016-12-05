@@ -10,6 +10,8 @@ oses:
 <%# This template defines useful variables to use else where %>
 <%-
 @tftp_boot_prefix = @host.params['tftp_boot_prefix'] || ''
+@local_boot_template = @host.params['local_boot_template'] || 'local'
+@local_boot_default = @host.params['local_boot_default'] || 'local'
 
 @nfsroot_ro_hostgroups = [
   'base/owens/compute',
@@ -50,6 +52,8 @@ if @host.hostgroup.present?
 end
 
 if @nfsroot
+  @local_boot_template = "OSC - PXELinux NFS root"
+  @local_boot_default = "nfsroot"
   if @host.hostgroup.to_s =~ /owens/
     @nfsroot_host   = @host.params['nfsroot_host'] || 'owens_root.ten.osc.edu'
     @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'

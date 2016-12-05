@@ -74,7 +74,7 @@ class FakeNamespace
   include ::TemplatesHelper
   attr_reader :root_pass, :grub_pass
   attr_accessor :template_name
-  def initialize(family, name, major, minor, hostgroup = 'base')
+  def initialize(family, name, major, minor, hostgroup = 'base', local_boot_template = 'local', local_boot_default = 'local')
     @mediapath = 'url --url http://localhost/repo/xyz'
     @root_pass = '$1$redhat$9yxjZID8FYVlQzHGhasqW/'
     @grub_pass = 'blah'
@@ -102,7 +102,10 @@ class FakeNamespace
       :diskLayout => DISKLAYOUT,
       :puppetmaster => 'http://localhost',
       :params => {
-        'enable-puppetlabs-repo' => 'true'
+        'enable-puppetlabs-repo' => 'true',
+        'nfsroot_kernel_version' => kernel,
+        'local_boot_template' => local_boot_template,
+        'local_boot_default' => local_boot_default
       },
       :info => {
         'parameters' => { 'realm' => 'EXAMPLE.COM' }
@@ -139,10 +142,7 @@ class FakeNamespace
         :name => 'production',
         :as_string => 'production',
       ),
-      :build? => false,
-      :params => {
-        'nfsroot_kernel_version' => kernel,
-      }
+      :build? => false
     )
   end
 

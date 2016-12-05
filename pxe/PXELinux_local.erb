@@ -7,24 +7,29 @@ name: PXELinux default local boot
 # This file was deployed via '<%= @template_name %>' template
 #
 <%= snippet "OSC - include" -%>
+<%-
+if @local_boot_template != 'local'
+  default = @local_boot_default
+  menu = snippet(@local_boot_template)
+else
+  default = "local"
+  menu = nil
+end
+-%>
+<%= "MENU: #{menu}"%>
 DEFAULT menu
 PROMPT 0
 MENU TITLE PXE Menu
 TIMEOUT 200
 TOTALTIMEOUT 6000
-<% if @nfsroot -%>
-ONTIMEOUT nfsroot
-<% else -%>
-ONTIMEOUT local
-<% end -%>
-<% if @nfsroot -%>
-<%= snippet "OSC - PXELinux NFS root" -%>
-<%#= snippet "PXELinux chain iPXE - snippet" %>
-<% end -%>
+ONTIMEOUT <%= default %>
+
+<%- if menu -%>
+<%= menu -%>
+<%- else -%>
 LABEL local
      MENU LABEL (local)
-<% if ! @nfsroot -%>
      MENU DEFAULT
-<% end -%>
      LOCALBOOT 0
+<% end -%>
 <%= snippet "OSC - PXELinux shared" -%>

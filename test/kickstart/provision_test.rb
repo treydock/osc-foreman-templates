@@ -10,8 +10,8 @@ class TestKickstartProvision < MiniTest::Test
     assert_equal code, 0
   end
 
-  def validate_template(template, major, minor, hostgroup = 'base')
-    ns = FakeNamespace.new('Redhat', 'RHEL', major, minor, hostgroup)
+  def validate_template(template, major, minor, hostgroup = 'base', local_boot_template = 'local', local_boot_default = 'local')
+    ns = FakeNamespace.new('Redhat', 'RHEL', major, minor, hostgroup, local_boot_template, local_boot_default)
     output = render_erb(template, ns)
     print output if debug
     refute_empty output
@@ -31,6 +31,10 @@ class TestKickstartProvision < MiniTest::Test
 
   def test_pxelinux_rhel7
     validate_template('kickstart/PXELinux.erb', '7', '2')
+  end
+
+  def test_localboot_rhel7
+    validate_template('pxe/PXELinux_local.erb', '7', '2')
   end
 
   def test_nfsroot_ro_owens_compute
@@ -67,6 +71,10 @@ class TestKickstartProvision < MiniTest::Test
 
   def test_nfsroot_rw_oakley
     validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/rw')
+  end
+
+  def test_tsm_legacy
+    validate_template('pxe/PXELinux_local.erb', '5', '10', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
   end
 
 end
