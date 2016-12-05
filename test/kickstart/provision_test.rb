@@ -74,7 +74,11 @@ class TestKickstartProvision < MiniTest::Test
   end
 
   def test_tsm_legacy
-    validate_template('pxe/PXELinux_local.erb', '5', '10', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
+    validate_template('pxe/PXELinux_local.erb', '5', '11', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
+  end
+
+  def test_glenn
+    validate_template('pxe/PXELinux_local.erb', '5', '11', 'base/glenn')
   end
 
 end

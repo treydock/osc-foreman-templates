@@ -87,6 +87,8 @@ class FakeNamespace
       kernel = '3.10.0-327.36.3.el7.x86_64'
     when '6'
       kernel = '2.6.32-573.35.2.el6.x86_64'
+    when '5'
+      kernel = '2.6.18-406.el5'
     else
       kernel = nil
     end

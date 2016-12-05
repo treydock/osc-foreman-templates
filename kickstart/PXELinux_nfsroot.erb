@@ -36,11 +36,7 @@ oses:
 
   if @host.provider == 'BareMetal'
     append << "console=tty"
-    if @host.params['console_tty']
-      append << "console=#{@host.params['console_tty']},115200"
-    else
-      append << "console=ttyS0,115200"
-    end
+    append << "console=#{@console_tty},#{@console_baud}"
   end
 
   # Disable Supervisor Mode Access Prevention on RHEL7 systems that are known to be broadwell
@@ -50,9 +46,9 @@ oses:
     end
   end
 
-  if @host.operatingsystem.major.to_i >= 7
+  if @host.operatingsystem.major.to_i >= 7 # Owens
     append << "rd.lvm=1 rd.md=0 rd.dm=0"
-  else
+  elsif @host.operatingsystem.major.to_i == 6 # Ruby/Oakley
     append << "rd_NO_LUKS rd_NO_MD rd_NO_DM"
   end
 
@@ -71,6 +67,15 @@ oses:
     @nfsroot_interfaces.split(',').each do |interface|
       append << "ip=#{interface}"
     end
+  # Glenn specific tweaks
+  elsif @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/glenn/
+    extra_labels = {
+      'single' => 'single',
+      'rebuild' => 'rebuild',
+      'initramfs' => 'ramfsinit=1',
+    }
+    append << "mtu=9000"
+    append << "nmi_watchdog=1"
   else
     extra_labels = {}
   end
