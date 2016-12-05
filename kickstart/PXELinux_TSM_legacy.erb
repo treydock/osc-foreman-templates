@@ -1,0 +1,30 @@
+<%#
+kind: snippet
+name: OSC - TSM legacy PXELinux
+oses:
+- CentOS
+- RedHat
+- RHEL Server
+%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+<%= snippet "OSC - include" -%>
+SERIAL 0 115200
+
+LABEL default
+        KERNEL <%= @tftp_boot_prefix %>nfsroot/vmlinuz-2.6.18-402.el5
+        APPEND console=tty console=ttyS0,115200 initrd=<%= @tftp_boot_prefix %>nfsroot/initramfs-2.6.18-402.el5.img root=/dev/tivoli/rhel5 selinux=0
+        MENU DEFAULT
+
+LABEL single
+        KERNEL <%= @tftp_boot_prefix %>nfsroot/vmlinuz-2.6.18-402.el5
+        APPEND console=tty console=ttyS0,115200 initrd=<%= @tftp_boot_prefix %>nfsroot/initramfs-2.6.18-402.el5.img root=/dev/tivoli/rhel5 selinux=0 single
+
+LABEL rebuild
+        KERNEL <%= @tftp_boot_prefix %>nfsroot/vmlinuz-2.6.18-402.el5
+        APPEND console=tty console=ttyS0,115200 initrd=<%= @tftp_boot_prefix %>nfsroot/initramfs-2.6.18-402.el5.img root=/dev/tivoli/rhel5 selinux=0 rebuild
+
+LABEL initramfs
+        KERNEL <%= @tftp_boot_prefix %>nfsroot/vmlinuz-2.6.18-402.el5
+        APPEND console=tty console=ttyS0,115200 initrd=<%= @tftp_boot_prefix %>nfsroot/initramfs-2.6.18-402.el5.img root=/dev/tivoli/rhel5 selinux=0 ramfsinit=1
