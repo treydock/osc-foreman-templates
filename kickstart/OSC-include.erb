@@ -77,9 +77,11 @@ if @nfsroot
     @nfsroot_bridges = @host.params['nfsroot_bridges'] || 'br0:eth0'
     @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || 'br0:dhcp'
   elsif @host.hostgroup.to_s =~ /glenn/
-    @nfsroot_host   = @host.params['nfsroot_host'] || 'glenn_root_prod.ten.osc.edu'
-    @nfsroot_path   = @host.params['nfsroot_path'] || '/glenn_root_prod'
-    @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=32768,wsize=32768'
+    @nfsroot_host   = @host.params['nfsroot_host'] || '192.148.250.21'
+    @nfsroot_path   = @host.params['nfsroot_path'] || '/cts11/5.11.3'
+    #@nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
+    #@nfsroot_path   = @host.params['nfsroot_path'] || '/glenn_root_prod'
+    @nfsroot_opts   = @host.params['nfsroot_opts'] || ''
     @nfsroot_bridges = @host.params['nfsroot_bridges'] || ''
     @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || ''
   end

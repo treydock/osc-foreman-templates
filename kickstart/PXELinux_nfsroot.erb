@@ -24,7 +24,10 @@ oses:
     append << "root=nfs:#{@nfsroot_host}:#{@nfsroot_path},#{@nfsroot_opts}"
   else
     append << "root=/dev/nfs"
-    append << "nfsroot=#{@nfsroot_host}:#{@nfsroot_path},#{@nfsroot_opts}"
+    append << "nfsroot=#{@nfsroot_host}:#{@nfsroot_path}"
+    if ! @nfsroot_opts.empty?
+      append << ",#{@nfsroot_opts}"
+    end
   end
 
   # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
