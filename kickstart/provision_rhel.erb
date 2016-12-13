@@ -154,6 +154,15 @@ echo "updating system time"
 <% if @host.operatingsystem.name != 'CentOS' -%>
 <%= snippet 'OSC-redhat_register' %>
 <% end -%>
+<%-# TODO: This should probably be in Puppet too -%>
+<%- if @host.param_true?('set-rhel-release') -%>
+subscription-manager release --set=<%= @host.operatingsystem.release %>
+subscription-manager release --show
+<%- if @host.operatingsystem.major == '7' -%>
+<%- #Disable repos that don't seem to work with setting a release -%>
+subscription-manager repos --disable rhel-7-fast-datapath-rpms
+<%- end -%>
+<%- end -%>
 
 <% if proxy_uri -%>
 # Yum proxy
@@ -161,7 +170,7 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 <% end -%>
 
 # update all the base packages from the updates repository
-<%- unless @host.param_false?('kickstart-yum-update') -%>
+<%- unless @host.param_false?('kickstart-yum-update') or ! @host.param_true?('set-rhel-release') -%>
 yum -t -y update
 <%- end -%>
 
