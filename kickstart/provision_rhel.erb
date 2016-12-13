@@ -161,7 +161,7 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 <% end -%>
 
 # update all the base packages from the updates repository
-<%- if @host.params['kickstart-yum-update'].present? && @host.param_true?('kickstart-yum-update') -%>
+<%- unless @host.param_false?('kickstart-yum-update') -%>
 yum -t -y update
 <%- end -%>
 
