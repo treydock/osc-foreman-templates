@@ -22,6 +22,9 @@ MENU TITLE PXE Menu
 TIMEOUT 200
 TOTALTIMEOUT 6000
 ONTIMEOUT <%= default %>
+<%- if @host.provider == 'BareMetal' && @console_tty =~ /ttyS/ -%>
+CONSOLE <%= @console_tty.gsub('ttyS', '') %> <%= @console_baud %>
+<%- end -%>
 
 <%- if menu -%>
 <%= menu -%>

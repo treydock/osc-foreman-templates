@@ -27,7 +27,7 @@ oses:
   if @host.provider == 'BareMetal'
     options << "console=tty"
     if @host.params['console_tty']
-      options << "console=#{@host.params['console_tty']},115200"
+      options << "console=#{@console_tty},#{@console_baud}"
     else
       options << "console=ttyS0,115200"
     end
@@ -51,6 +51,9 @@ oses:
 DEFAULT nfsroot
 <%- else -%>
 DEFAULT linux
+<%- end -%>
+<%- if @host.provider == 'BareMetal' && @console_tty =~ /ttyS/ -%>
+CONSOLE <%= @console_tty.gsub('ttyS', '') %> <%= @console_baud %>
 <%- end -%>
 <%- if @nfsroot -%>
 <%= snippet "OSC - PXELinux NFS root" -%>
