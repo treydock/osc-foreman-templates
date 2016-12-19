@@ -16,8 +16,13 @@ else
   menu = nil
 end
 -%>
+<%- if @pxelinux_menu -%>
 DEFAULT menu
 PROMPT 0
+<%- else -%>
+DEFAULT <%= default %>
+PROMPT 1
+<%- end -%>
 MENU TITLE PXE Menu
 TIMEOUT 200
 TOTALTIMEOUT 6000
