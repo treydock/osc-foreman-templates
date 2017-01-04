@@ -1,0 +1,17 @@
+<%#
+kind: ptable
+name: OSC - Autopart - plain
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+ignoredisk --only-use=sda
+zerombr
+clearpart --all --initlabel --linux --drives=sda
+<% if @host.operatingsystem.major.to_i >= 7 -%>
+autopart --type=plain
+<% else -%>
+autopart
+<% end -%>
