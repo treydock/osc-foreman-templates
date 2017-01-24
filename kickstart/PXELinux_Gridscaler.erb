@@ -1,0 +1,16 @@
+<%#
+kind: PXELinux
+name: OSC - PXELinux - Gridscaler
+oses:
+- CentOS
+%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+<%= snippet "OSC - include" -%>
+DEFAULT linux
+
+LABEL linux
+    KERNEL memdisk
+    APPEND iso
+    INITRD <%= @tftp_boot_prefix %>iso/gs-4.1.0-RHEL-r30-x86_64-DVD-osc.iso
