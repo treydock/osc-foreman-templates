@@ -1,0 +1,20 @@
+<%#
+kind: ptable
+name: OSC - VM - LVM opt var tmp
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+ignoredisk --only-use=sda
+zerombr
+clearpart --all --initlabel --linux --drives=sda
+part /boot --fstype=ext4 --size=1000
+part pv.0 --grow --size=1
+volgroup vg0 --pesize=4096 pv.0
+logvol / --fstype=ext4 --name=lv_root --vgname=vg0 --size=20480
+logvol swap --name=lv_swap --vgname=vg0 --size=4096
+logvol /tmp --fstype=ext4 --name=lv_tmp --vgname=vg0 --size=5120
+logvol /var --fstype=ext4 --name=lv_var --vgname=vg0 --size=10240
+logvol /opt --fstype=ext4 --name=lv_var --vgname=vg0 --size=10240 --grow --maxsize=51200
