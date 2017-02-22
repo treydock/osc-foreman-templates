@@ -31,3 +31,5 @@ ca_server       = <%= @host.puppet_ca_server %>
 certname        = <%= @host.certname %>
 environment     = <%= @host.environment %>
 server          = <%= @host.puppetmaster %>
+configtimeout   = <%= @host.params['puppet-configtimeout'] || '300' %>
+

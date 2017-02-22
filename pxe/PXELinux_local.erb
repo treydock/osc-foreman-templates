@@ -37,6 +37,6 @@ CONSOLE <%= @console_tty.gsub('ttyS', '') %> <%= @console_baud %>
 LABEL local
      MENU LABEL (local)
      MENU DEFAULT
-     LOCALBOOT 0
+     LOCALBOOT <%= @host.params['pxelinux_localboot_value'] || 0 %>
 <% end -%>
 <%= snippet "OSC - PXELinux shared" -%>
