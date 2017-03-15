@@ -15,6 +15,11 @@ oses:
 @console_tty = @host.params['console_tty'] || 'ttyS0'
 @console_baud = @host.params['console_baud'] || '115200'
 @pxelinux_menu = true
+if @host.provision_interface.present? && @host.provision_interface.identifier.present?
+  @provision_interface = @host.provision_interface.identifier
+else
+  @provision_interface = 'eth0'
+end
 
 @nfsroot_ro_hostgroups = [
   'base/owens/compute',

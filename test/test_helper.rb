@@ -126,9 +126,11 @@ class FakeNamespace
       :mac => '00:00:00:00:00:01',
       :provision_interface => FakeStruct.new(
         :type => 'Nic::Managed',
+        :identifier => 'eth0',
       ),
       :primary_interface => FakeStruct.new(
         :type => 'Nic::Managed',
+        :identifier => 'eth0',
       ),
       :managed_interfaces => [],
       :bond_interfaces => [],
