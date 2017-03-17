@@ -85,7 +85,7 @@ oses:
   # Owens & generic tweaks
   else
     extra_labels = {}
-    append << "ip=#{@provision_interface}:dhcp"
+    append << "ip=#{@provision_interface_identifier}:dhcp"
   end
 
   primary_interface = @host.primary_interface

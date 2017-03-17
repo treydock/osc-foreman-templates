@@ -16,9 +16,9 @@ oses:
 @console_baud = @host.params['console_baud'] || '115200'
 @pxelinux_menu = true
 if @host.provision_interface.present? && @host.provision_interface.identifier.present?
-  @provision_interface = @host.provision_interface.identifier
+  @provision_interface_identifier = @host.provision_interface.identifier
 else
-  @provision_interface = 'eth0'
+  @provision_interface_identifier = 'eth0'
 end
 
 @nfsroot_ro_hostgroups = [
