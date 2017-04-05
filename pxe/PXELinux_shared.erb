@@ -6,7 +6,16 @@ name: OSC - PXELinux shared
 #
 # This file was deployed via '<%= @template_name %>' template
 #
+<%- if @host.present? -%>
 <%= snippet "OSC - include" -%>
+<%- else
+param = CommonParameter.where(name: 'tftp_boot_prefix').first
+if param.present?
+  @tftp_boot_prefix = param.value
+else
+  @tftp_boot_prefix = ''
+end
+end -%>
 <%-
 # Account for case where this template is generated for PXELinux_default which is not associated to a host
 console = []

@@ -10,8 +10,12 @@ class TestKickstartProvision < MiniTest::Test
     assert_equal code, 0
   end
 
-  def validate_template(template, major, minor, hostgroup = 'base', local_boot_template = 'local', local_boot_default = 'local')
-    ns = FakeNamespace.new('Redhat', 'RHEL', major, minor, hostgroup, local_boot_template, local_boot_default)
+  def validate_template(template, major, minor, hostgroup = 'base', local_boot_template = 'local', local_boot_default = 'local', host = true)
+    if host
+      ns = FakeNamespace.new('Redhat', 'RHEL', major, minor, hostgroup, local_boot_template, local_boot_default)
+    else
+      ns = EmptyNamespace.new()
+    end
     output = render_erb(template, ns)
     print output if debug
     refute_empty output
@@ -79,6 +83,10 @@ class TestKickstartProvision < MiniTest::Test
 
   def test_glenn
     validate_template('pxe/PXELinux_local.erb', '5', '11', 'base/glenn')
+  end
+
+  def test_default
+    validate_template('pxe/PXELinux_default.erb', nil, nil, nil, nil, nil, false)
   end
 
 end

@@ -45,6 +45,12 @@ class FakeStruct
   end
 end
 
+class CommonParameter
+  def self.where(*args)
+    []
+  end
+end
+
 module TemplatesHelper
   def render_erb(template, namespace)
     namespace.template_name = template
@@ -70,7 +76,32 @@ module TemplatesHelper
 
 end
 
-class FakeNamespace
+class BaseNamespace
+  def snippet(snip)
+    test_dir = File.dirname(__FILE__)
+    root = File.absolute_path("#{test_dir}/../")
+    Dir.glob("#{root}/**/*.erb") do |erb|
+      extracted = IO.read(erb).match(/<%#(.+?).-?%>/m)
+      yaml = YAML.load(extracted[1])
+      next if yaml['kind'] != 'snippet'
+      if yaml['name'] == snip
+        return render_erb(erb, self)
+      end
+    end
+  end
+end
+
+class EmptyNamespace < BaseNamespace
+  include ::TemplatesHelper
+  attr_accessor :template_name
+
+  def initialize()
+    @profiles = []
+    @host = nil
+  end
+end
+
+class FakeNamespace < BaseNamespace
   include ::TemplatesHelper
   attr_reader :root_pass, :grub_pass
   attr_accessor :template_name
@@ -148,19 +179,6 @@ class FakeNamespace
       ),
       :build? => false
     )
-  end
-
-  def snippet(snip)
-    test_dir = File.dirname(__FILE__)
-    root = File.absolute_path("#{test_dir}/../")
-    Dir.glob("#{root}/**/*.erb") do |erb|
-      extracted = IO.read(erb).match(/<%#(.+?).-?%>/m)
-      yaml = YAML.load(extracted[1])
-      next if yaml['kind'] != 'snippet'
-      if yaml['name'] == snip
-        return render_erb(erb, self)
-      end
-    end
   end
 
   def ks_console(*args)
