@@ -20,6 +20,7 @@ This template accepts the following parameters:
 - bootloader-append: string (default="nofb quiet splash=quiet")
 - disable-firewall: boolean (default=false)
 %>
+<%= snippet "OSC - include" -%>
 <%
   os_major = @host.operatingsystem.major.to_i
   realm_compatible = os_major >= 7 ? true : false
@@ -84,7 +85,7 @@ repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/<%= @host
 repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/dependencies/<%= @host.architecture %><%= proxy_string %>
 
 <% if os_major == 7 -%>
-bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet net.ifnames=0 biosdevname=0' %>" <%= grub_pass %>
+bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || "nofb quiet splash=quiet #{@eth_interfaces_kernel}" %>" <%= grub_pass %>
 <% else -%>
 bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || 'nofb quiet splash=quiet' %>" <%= grub_pass %>
 <% end -%>

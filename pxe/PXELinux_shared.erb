@@ -33,7 +33,7 @@ console = console.join(" ")
 -%>
 LABEL centos-7-livecd
         KERNEL <%= @tftp_boot_prefix %>centos-7-livecd/vmlinuz0
-        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 net.ifnames=0 biosdevname=0 <%= console %>
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 <%= console %>
         MENU LABEL CentOS 7 LiveCD
 
 LABEL centos-6-livecd

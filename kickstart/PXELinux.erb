@@ -61,7 +61,7 @@ CONSOLE <%= @console_tty.gsub('ttyS', '') %> <%= @console_baud %>
 LABEL linux
     KERNEL <%= "#{@tftp_boot_prefix}#{@kernel}" %>
     <%- if @host.operatingsystem.major.to_i >= 7 -%>
-    APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> net.ifnames=0 biosdevname=0 <%= bond %>
+    APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> network ks.sendmac <%= options %> <%= @eth_interfaces_kernel %> <%= bond %>
     <%- else -%>
     APPEND initrd=<%= "#{@tftp_boot_prefix}#{@initrd}" %> ks=<%= foreman_url('provision')%> ksdevice=bootif network kssendmac <%= options %> <%= bond %>
     <%- end -%>
