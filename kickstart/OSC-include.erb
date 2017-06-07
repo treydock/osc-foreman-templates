@@ -20,7 +20,7 @@ oses:
 if @use_eth_interfaces
   @eth_interfaces_kernel = 'net.ifnames=0 biosdevname=0'
 else
-  @eth_interfaces_kernel = ''
+  @eth_interfaces_kernel = 'biosdevname=1'
 end
 if @host.provision_interface.present? && @host.provision_interface.identifier.present?
   @provision_interface_identifier = @host.provision_interface.identifier
