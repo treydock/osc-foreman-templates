@@ -160,6 +160,7 @@ echo "updating system time"
 <%- if @host.param_true?('set-rhel-release') -%>
 subscription-manager release --set=<%= @host.operatingsystem.release %>
 subscription-manager release --show
+yum clean all
 <%- if @host.operatingsystem.major == '7' -%>
 <%- #Disable repos that don't seem to work with setting a release -%>
 subscription-manager repos --disable rhel-7-fast-datapath-rpms
@@ -172,7 +173,7 @@ echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 <% end -%>
 
 # update all the base packages from the updates repository
-<%- unless @host.param_false?('kickstart-yum-update') or @host.param_true?('set-rhel-release') -%>
+<%- unless @host.param_false?('kickstart-yum-update') -%>
 yum -t -y update
 <%- end -%>
 
