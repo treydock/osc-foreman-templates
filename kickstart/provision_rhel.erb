@@ -161,8 +161,10 @@ echo "updating system time"
 subscription-manager release --set=<%= @host.operatingsystem.release %>
 subscription-manager release --show
 <%- # Try and force repo URL refresh -%>
-subscription-manager repos
+<%- # https://access.redhat.com/support/cases/#/case/01877188 -%>
+subscription-manager refresh
 yum clean all
+yum repolist
 <%- if @host.operatingsystem.major == '7' -%>
 <%- #Disable repos that don't seem to work with setting a release -%>
 subscription-manager repos --disable rhel-7-fast-datapath-rpms
