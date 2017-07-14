@@ -40,3 +40,8 @@ LABEL centos-6-livecd
         KERNEL <%= @tftp_boot_prefix %>centos-6-livecd/vmlinuz0
         APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-6-livecd/initrd0.img root=live:/centos6-live.iso rootfstype=auto ro liveimg nodiskmount nolvmmount rd_NO_LUKS rd_NO_MD rd_NO_DM <%= console %>
         MENU LABEL CentOS 6 LiveCD
+
+LABEL dell-stress-test
+        KERNEL <%= @tftp_boot_prefix %>dell-stress-test/vmlinuz0
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>dell-stress-test/initrd0.img root=live:/SLI22_A00.iso rootfstype=auto ro rd.live.image quiet  rhgb vga=791 rd.luks=0 rd.md=0 rd.dm=0 nomodeset
+        MENU LABEL Dell Stress Test ISO
