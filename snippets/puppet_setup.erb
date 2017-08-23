@@ -25,4 +25,4 @@ EOF
 /sbin/chkconfig --level 345 puppet on
 <% end -%>
 
-<%= bin_path %>/puppet agent --config <%= etc_path %>/puppet.conf --onetime --tags mofed <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
+<%= bin_path %>/puppet agent --config <%= etc_path %>/puppet.conf --onetime --tags mofed,facter <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
