@@ -43,5 +43,5 @@ LABEL centos-6-livecd
 
 LABEL dell-stress-test
         KERNEL <%= @tftp_boot_prefix %>dell-stress-test/vmlinuz0
-        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>dell-stress-test/initrd0.img root=live:/SLI22_A00.iso rootfstype=auto ro rd.live.image quiet  rhgb vga=791 rd.luks=0 rd.md=0 rd.dm=0 nomodeset <%= console %>
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>dell-stress-test/initrd0.img root=live:/SLI22_A00.iso rootfstype=auto ro rd.live.image rhgb vga=791 rd.luks=0 rd.md=0 rd.dm=0 nomodeset <%= console %>
         MENU LABEL Dell Stress Test ISO
