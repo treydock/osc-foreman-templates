@@ -188,6 +188,18 @@ class FakeNamespace < BaseNamespace
   def foreman_url(*args)
     'http://localhost'
   end
+
+  def host_param(name)
+    @host.params[name]
+  end
+
+  def host_param_true?(name)
+    host_param(name) == 'true'
+  end
+
+  def host_param_false?(name)
+    host_param(name) == 'false'
+  end
 end
 
 class String

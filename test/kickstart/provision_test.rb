@@ -22,71 +22,71 @@ class TestKickstartProvision < MiniTest::Test
   end
 
   def test_rhel_6
-    validate_distro('kickstart/provision_rhel.erb', 'Redhat', 'RHEL', '6', '0', 'RHEL6')
+    validate_distro('provisioning_templates/provision/kickstart_rhel_default.erb', 'Redhat', 'RHEL', '6', '0', 'RHEL6')
   end
 
   def test_rhel_7
-    validate_distro('kickstart/provision_rhel.erb', 'Redhat', 'RHEL', '7', '0', 'RHEL7')
+    validate_distro('provisioning_templates/provision/kickstart_rhel_default.erb', 'Redhat', 'RHEL', '7', '0', 'RHEL7')
   end
 
   def test_pxelinux_rhel6
-    validate_template('kickstart/PXELinux.erb', '6', '8')
+    validate_template('provisioning_templates/PXELinux/kickstart_default_pxelinux.erb', '6', '8')
   end
 
   def test_pxelinux_rhel7
-    validate_template('kickstart/PXELinux.erb', '7', '2')
+    validate_template('provisioning_templates/PXELinux/kickstart_default_pxelinux.erb', '7', '2')
   end
 
   def test_localboot_rhel7
-    validate_template('pxe/PXELinux_local.erb', '7', '2')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2')
   end
 
   def test_nfsroot_ro_owens_compute
-    validate_template('pxe/PXELinux_local.erb', '7', '2', 'base/owens/compute')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2', 'base/owens/compute')
   end
 
   def test_nfsroot_ro_owens_login
-    validate_template('pxe/PXELinux_local.erb', '7', '2', 'base/owens/login')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2', 'base/owens/login')
   end
 
   def test_nfsroot_rw_owens
-    validate_template('pxe/PXELinux_local.erb', '7', '2', 'base/owens/rw')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2', 'base/owens/rw')
   end
 
   def test_nfsroot_ro_ruby_compute
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/compute')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/ruby/compute')
   end
 
   def test_nfsroot_ro_ruby_login
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/login')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/ruby/login')
   end
 
   def test_nfsroot_rw_ruby
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/ruby/rw')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/ruby/rw')
   end
 
   def test_nfsroot_ro_oakley_compute
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/compute')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/oakley/compute')
   end
 
   def test_nfsroot_ro_oakley_login
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/login')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/oakley/login')
   end
 
   def test_nfsroot_rw_oakley
-    validate_template('pxe/PXELinux_local.erb', '6', '8', 'base/oakley/rw')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '6', '8', 'base/oakley/rw')
   end
 
   def test_tsm_legacy
-    validate_template('pxe/PXELinux_local.erb', '5', '11', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '5', '11', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
   end
 
   def test_glenn
-    validate_template('pxe/PXELinux_local.erb', '5', '11', 'base/glenn')
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '5', '11', 'base/glenn')
   end
 
   def test_default
-    validate_template('pxe/PXELinux_default.erb', nil, nil, nil, nil, nil, false)
+    validate_template('provisioning_templates/PXELinux/pxelinux_global_default.erb', nil, nil, nil, nil, nil, false)
   end
 
 end
