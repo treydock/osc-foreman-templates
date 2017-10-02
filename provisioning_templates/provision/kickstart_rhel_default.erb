@@ -140,7 +140,7 @@ exec < /dev/tty3 > /dev/tty3
 /usr/bin/chvt 3
 (
 <% if subnet.respond_to?(:dhcp_boot_mode?) -%>
-<%= snippet 'OSC-kickstart_networking_setup' %>
+<%= snippet 'kickstart_networking_setup' %>
 <% end -%>
 
 # Update URLs used for repositories
