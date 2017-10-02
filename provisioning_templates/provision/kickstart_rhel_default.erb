@@ -9,12 +9,14 @@ oses:
 <%#
 This template accepts the following parameters:
 - kickstart_selinux: string (default="enforcing")
-- epel_url_base: string (default=use epel mirror)
 - http-proxy: string (default="")
 - http-proxy-port: string (default="")
 - force-puppet: boolean (default=false)
+- enable-epel: boolean (default=true)
+- epel-repo-base: string (default="https://dl.fedoraproject.org/pub/epel")
 - enable-puppetlabs-repo: boolean (default=false)
 - enable-puppetlabs-pc1-repo: boolean (default=false)
+- puppetlabs-repo-base: string (default=nil)
 - salt_master: string (default=undef)
 - ntp-server: string (default="0.fedora.pool.ntp.org")
 - bootloader-append: string (default="nofb quiet splash=quiet")
@@ -81,8 +83,9 @@ repo --name="EPEL" --baseurl=<%= @host.params['epel_url_base'] %>/epel/<%= @host
 <% else -%>
 repo --name="EPEL" --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-<%= @host.operatingsystem.major %>&arch=<%= @host.architecture %><%= proxy_string %>
 <% end -%>
-repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/products/<%= @host.architecture %><%= proxy_string %>
-repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/<%= @host.operatingsystem.major %>/dependencies/<%= @host.architecture %><%= proxy_string %>
+repo --name=puppetlabs-products --baseurl=https://repo.hpc.osc.edu/internal/puppetlabs/el/<%= @host.operatingsystem.major %>/products/<%= @host.architecture %><%= proxy_string %>
+repo --name=puppetlabs-deps --baseurl=https://repo.hpc.osc.edu/internal/puppetlabs/el/<%= @host.operatingsystem.major %>/dependencies/<%= @host.architecture %><%= proxy_string %>
+
 
 <% if os_major == 7 -%>
 bootloader --location=mbr --driveorder=sda --append="<%= @host.params['bootloader-append'] || "nofb quiet splash=quiet #{@eth_interfaces_kernel}" %>" <%= grub_pass %>
@@ -112,8 +115,6 @@ wget
 sssd
 sssd-tools
 epel-release
-# WORKAROND: Use specific version as release 12 seems to not work
-#puppetlabs-release-<%= @host.operatingsystem.major %>-11.noarch
 puppet
 <%= section_end -%>
 
@@ -189,6 +190,9 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-<%= bond_name %>_slave*
 <% end -%>
 
 <% if puppet_enabled %>
+<% if host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppetlabs-repo') || host_param_true?('enable-puppetlabs-puppet5-repo') -%>
+<%= snippet 'puppetlabs_repo' %>
+<% end -%>
 <%= snippet 'puppet_setup' %>
 <% end -%>
 
