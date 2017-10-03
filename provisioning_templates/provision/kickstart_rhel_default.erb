@@ -149,6 +149,7 @@ exec < /dev/tty3 > /dev/tty3
 <% if ! @host.params['epel_url_base'].nil? -%>
 echo "Updating EPEL mirrorlist=absent and baseurl=<%= @host.params['epel_url_base'] %>/epel/<%= @host.operatingsystem.major %>/<%= @host.architecture %><%= proxy_string %>"
 puppet resource yumrepo epel mirrorlist=absent baseurl=<%= @host.params['epel_url_base'] %>/epel/<%= @host.operatingsystem.major %>/<%= @host.architecture %><%= proxy_string %>
+yum clean all
 <% end -%>
 
 #update local time
