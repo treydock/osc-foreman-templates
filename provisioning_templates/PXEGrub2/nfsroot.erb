@@ -1,0 +1,114 @@
+<%#
+kind: snippet
+name: OSC - PXEGrub2 NFS root
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+-%>
+#
+# This file was deployed via '<%= @template_name %>' template
+#
+# Supported host/hostgroup parameters:
+#
+# TODO
+#
+<%= snippet "OSC - include" -%>
+<%-
+  append = []
+  append << "network"
+  if @host.operatingsystem.major.to_i >= 7
+    append << "net.ifnames=0 biosdevname=0"
+    append << "root=nfs:#{@nfsroot_host}:#{@nfsroot_path},#{@nfsroot_opts}"
+  else
+    append << "root=/dev/nfs"
+    append << "nfsroot=#{@nfsroot_host}:#{@nfsroot_path}"
+    if ! @nfsroot_opts.empty?
+      append << ",#{@nfsroot_opts}"
+    end
+  end
+
+  # These arguments get used by the readonly-root service on both RHEL6 and RHEL7
+  if @nfsroot_ro
+    append << "ro readonlyroot"
+  elsif @nfsroot_rw
+    append << "rw noreadonlyroot"
+  end
+
+  if @host.provider == 'BareMetal'
+    append << "console=tty"
+    append << "console=#{@console_tty},#{@console_baud}"
+  end
+
+  # Disable Supervisor Mode Access Prevention on RHEL7 systems that are known to be broadwell
+  if @host.operatingsystem.major.to_i >= 7
+    if @host.hostgroup.present? && ['base/owens/compute', 'base/owens/login'].include?(@host.hostgroup.to_s)
+      append << "nosmap"
+    end
+  end
+
+  if @host.operatingsystem.major.to_i >= 7 # Owens
+    append << "rd.lvm=1 rd.md=0 rd.dm=0"
+  elsif @host.operatingsystem.major.to_i == 6 # Ruby/Oakley
+    append << "rd_NO_LUKS rd_NO_MD rd_NO_DM"
+  end
+
+  # Ruby and Oakley specific tweaks
+  if @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/ruby|base\/oakley/
+    extra_labels = {
+      'single' => 'single',
+      'rebuild' => 'rebuild',
+      'initramfs' => 'ramfsinit=1',
+    }
+    append << "LANG=en_US.UTF-8 SYSFONT=latarcyrheb-sun16 KEYTABLE=us rdshell rdblacklist=mlx4_core"
+    append << "mtu=9000"
+    @nfsroot_bridges.split(',').each do |bridge|
+      append << "bridge=#{bridge}"
+    end
+    @nfsroot_interfaces.split(',').each do |interface|
+      append << "ip=#{interface}"
+    end
+    if @host.params['extra_kernel_command_line']
+      append << @host.params['extra_kernel_command_line']
+    end
+  # Glenn specific tweaks
+  elsif @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/glenn/
+    extra_labels = {
+      'single' => 'single',
+      'rebuild' => 'rebuild',
+      'initramfs' => 'ramfsinit=1',
+    }
+    append << "mtu=9000"
+    append << "nmi_watchdog=1"
+  # Owens & generic tweaks
+  else
+    extra_labels = {}
+    append << "ip=#{@provision_interface_identifier}:dhcp"
+  end
+
+  primary_interface = @host.primary_interface
+  if primary_interface.type == 'Nic::Bond'
+    name = primary_interface.identifier
+    slaves = primary_interface.attached_devices
+    bondopts = primary_interface.bond_options.split(/\s/)
+    bondopts << "mode=#{primary_interface.mode}"
+    bondopts = bondopts.join(',')
+    bond = "bond=#{name}:#{slaves}:#{bondopts}"
+  else
+    bond = ""
+  end
+  append << bond
+
+  append = append.join(' ')
+-%>
+menuentry 'nfsroot' {
+  linuxefi <%= @nfsroot_kernel %> <%= append %>
+  initrdefi <%= @nfsroot_initrd %>
+}
+<%- extra_labels.each_pair do |label, extra_append| -%>
+menuentry '<%= label %>' {
+  linuxefi <%= @nfsroot_kernel %> <%= append %> <%= extra_append %>
+  initrdefi <%= @nfsroot_initrd %>
+}
+<%- end -%>

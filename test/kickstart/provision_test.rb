@@ -89,4 +89,28 @@ class TestKickstartProvision < MiniTest::Test
     validate_template('provisioning_templates/PXELinux/pxelinux_global_default.erb', nil, nil, nil, nil, nil, false)
   end
 
+  def test_pxegrub2_rhel6
+    validate_template('provisioning_templates/PXEGrub2/kickstart_default_pxegrub2.erb', '6', '8')
+  end
+
+  def test_pxegrub2_rhel7
+    validate_template('provisioning_templates/PXEGrub2/kickstart_default_pxegrub2.erb', '7', '2')
+  end
+
+  def test_pxegrub2_localboot_rhel7
+    validate_template('provisioning_templates/PXEGrub2/pxegrub2_default_local_boot.erb', '7', '2')
+  end
+
+  def test_pxegrub2_nfsroot_ro_owens_compute
+    validate_template('provisioning_templates/PXEGrub2/pxegrub2_default_local_boot.erb', '7', '2', 'base/owens/compute')
+  end
+
+  def test_pxegrub2_nfsroot_ro_owens_login
+    validate_template('provisioning_templates/PXEGrub2/pxegrub2_default_local_boot.erb', '7', '2', 'base/owens/login')
+  end
+
+  def test_nfsroot_rw_owens
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2', 'base/owens/rw')
+  end
+
 end

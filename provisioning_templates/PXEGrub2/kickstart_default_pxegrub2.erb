@@ -7,7 +7,7 @@ oses:
 - RedHat
 -%>
 # This file was deployed via '<%= template_name %>' template
-
+<%= snippet "OSC - include" -%>
 <%
   major = @host.operatingsystem.major.to_i
   mac = @host.provision_interface.mac
@@ -56,13 +56,41 @@ oses:
     options.push("modprobe.blacklist=" + host_param('blacklist').gsub(' ', ''))
   end
 
+  if @host.provider == 'BareMetal'
+    options << "console=tty"
+    if @host.params['console_tty']
+      options << "console=#{@console_tty},#{@console_baud}"
+    else
+      options << "console=ttyS0,115200"
+    end
+  end
+
+  primary_interface = @host.primary_interface
+  if primary_interface.type == 'Nic::Bond'
+    name = primary_interface.identifier
+    slaves = primary_interface.attached_devices
+    bondopts = primary_interface.bond_options.split(/\s/)
+    bondopts << "mode=#{primary_interface.mode}"
+    bondopts = bondopts.join(',')
+    bond = "bond=#{name}:#{slaves}:#{bondopts}"
+    options << bond
+  end
+
   ksoptions = options.join(' ')
 -%>
 
 set default=0
 set timeout=<%= host_param('loader_timeout') || 10 %>
 
+<%- if @nfsroot -%>
+<%= snippet "OSC - PXEGrub2 NFS root" -%>
+<%- else -%>
 menuentry '<%= template_name %>' {
+<%- if @host.operatingsystem.major.to_i >= 7 -%>
+  linuxefi <%= @kernel %> ks=<%= foreman_url('provision') %> <%= pxe_kernel_options %> <%= ksoptions %> <%= @eth_interfaces_kernel %>
+<%- else -%>
   linuxefi <%= @kernel %> ks=<%= foreman_url('provision') %> <%= pxe_kernel_options %> <%= ksoptions %>
+<%- end -%>
   initrdefi <%= @initrd %>
 }
+<%- end -%>

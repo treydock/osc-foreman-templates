@@ -89,6 +89,14 @@ class BaseNamespace
       end
     end
   end
+
+  def foreman_server_url
+    'http://localhost'
+  end
+
+  def pxe_kernel_options
+    [].join(' ')
+  end
 end
 
 class EmptyNamespace < BaseNamespace
@@ -158,6 +166,11 @@ class FakeNamespace < BaseNamespace
       :provision_interface => FakeStruct.new(
         :type => 'Nic::Managed',
         :identifier => 'eth0',
+        :mac => '00:00:00:00:00:01',
+        :subnet => FakeStruct.new(
+          :dhcp_boot_mode? => true,
+          :dhcp? => true,
+        ),
       ),
       :primary_interface => FakeStruct.new(
         :type => 'Nic::Managed',
