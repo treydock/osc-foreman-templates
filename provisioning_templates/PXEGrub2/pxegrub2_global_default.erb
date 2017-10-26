@@ -1,0 +1,41 @@
+<%#
+kind: PXEGrub2
+name: PXEGrub2 global default
+%>
+<%# Used to boot unknown hosts, do not associate or change the name. %>
+
+default=0
+timeout=20
+
+# On Debian/Ubuntu grub2 does not have patch for loading MAC-based configs. Also due to bug
+# in RHEL 7.4 files are loaded with an extra ":" character at the end. This workarounds both
+# cases, make sure "regexp.mod" file is present on the TFTP. For more info see:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1370642#c70
+insmod regexp
+regexp --set=1:m1 --set=2:m2 --set=3:m3 --set=4:m4 --set=5:m5 --set=6:m6 '^([[:xdigit:]]{1,2})\:([[:xdigit:]]{1,2})\:([[:xdigit:]]{1,2})\:([[:xdigit:]]{1,2})\:([[:xdigit:]]{1,2})\:([[:xdigit:]]{1,2})' "$net_default_mac"
+mac=${m1}-${m2}-${m3}-${m4}-${m5}-${m6}
+configfile=/grub2/grub.cfg-01-$mac
+source "$configfile"
+
+<%= snippet "pxegrub2_chainload" %>
+
+<%= snippet "pxegrub2_discovery" %>
+
+<% unless @profiles.nil? -%>
+<% for profile in @profiles
+  url = default_template_url(profile[:template], profile[:hostgroup])
+  case profile[:pxe_type]
+  when 'kickstart'
+    append = "ks=#{url} ksdevice=bootif network kssendmac ks.sendmac inst.ks.sendmac"
+  when 'preseed'
+    locale = profile[:hostgroup].params['lang'] || 'en_US'
+    append = "interface=auto url=#{url} ramdisk_size=10800 root=/dev/rd/0 rw auto hostname=unassigned-hostname locale=#{locale} console-setup/ask_detect=false console-setup/layout=USA console-setup/variant=USA"
+  else
+    raise("PXE type #{profile[:pxe_type]} not supported by template #{template_name}")
+  end %>
+menuentry '<%= "#{profile[:hostgroup]} - #{profile[:template]}" %>' {
+  linuxefi <%= profile[:kernel] %> <%= append %>
+  initrdefi <%= profile[:initrd] %>
+}
+<% end %>
+<% end -%>
