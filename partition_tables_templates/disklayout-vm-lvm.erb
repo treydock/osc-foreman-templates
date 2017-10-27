@@ -11,6 +11,10 @@ ignoredisk --only-use=sda
 zerombr
 clearpart --all --initlabel --linux --drives=sda
 part /boot --fstype=ext4 --size=1000
+<%- if @host.operatingsystem.major.to_i >= 7 && @host.pxe_loader =~ /EFI/ -%>
+<%# https://access.redhat.com/solutions/1554963 %>
+part /boot/efi --type=efi --size 256
+<%- end -%>
 part pv.0 --grow --size=1
 volgroup vg0 --pesize=4096 pv.0
 logvol /home --fstype=ext4 --name=lv_home --vgname=vg0 --size=10240
