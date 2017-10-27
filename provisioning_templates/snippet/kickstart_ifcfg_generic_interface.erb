@@ -31,10 +31,11 @@ DEVICE=$real
 <%=   "HWADDR=\"#{@interface.mac}\"" %>
 <%- end -%>
 <%- onboot = 'yes'
-  if @host.provision_interface.identifier.present? && @interface.identifier.present? &&
-       @host.provision_interface.identifier == @interface.identifier &&
-       @host.provision_interface != @host.primary_interface
-     onboot = 'no'
+if @host.provision_interface.identifier.present? && @interface.identifier.present? &&
+    @host.provision_interface.identifier == @interface.identifier &&
+    @host.provision_interface != @host.primary_interface
+  onboot = 'no'
+end
 -%>
 ONBOOT=<%= onboot %>
 <%- primary = @interface.primary ? 'yes' : 'no' -%>
