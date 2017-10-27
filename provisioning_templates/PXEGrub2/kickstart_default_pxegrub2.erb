@@ -86,7 +86,7 @@ set timeout=<%= host_param('loader_timeout') || 10 %>
 <%- if @nfsroot -%>
 <%= snippet "OSC - PXEGrub2 NFS root" -%>
 <%- else -%>
-menuentry '<%= template_name %>' {
+menuentry 'kickstart' {
 <%- if @host.operatingsystem.major.to_i >= 7 -%>
   linuxefi <%= @kernel %> ks=<%= foreman_url('provision') %> <%= pxe_kernel_options %> <%= ksoptions %> <%= @eth_interfaces_kernel %>
 <%- else -%>

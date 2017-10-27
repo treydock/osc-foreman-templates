@@ -30,7 +30,13 @@ DEVICE=$real
 <%- unless @interface.virtual? -%>
 <%=   "HWADDR=\"#{@interface.mac}\"" %>
 <%- end -%>
-ONBOOT=yes
+<%- onboot = 'yes'
+  if @host.provision_interface.identifier.present? && @interface.identifier.present? &&
+       @host.provision_interface.identifier == @interface.identifier &&
+       @host.provision_interface != @host.primary_interface
+     onboot = 'no'
+-%>
+ONBOOT=<%= onboot %>
 <%- primary = @interface.primary ? 'yes' : 'no' -%>
 PEERDNS=<%= primary %>
 PEERROUTES=<%= primary %>
