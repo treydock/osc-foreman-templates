@@ -74,7 +74,7 @@ oses:
     bondopts << "mode=#{primary_interface.mode}"
     bondopts = bondopts.join(',')
     bond = "bond=#{name}:#{slaves}:#{bondopts}"
-    options << bond
+    #options << bond
   end
 
   ksoptions = options.join(' ')
