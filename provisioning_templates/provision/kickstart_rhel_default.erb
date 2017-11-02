@@ -162,6 +162,7 @@ echo "updating system time"
 <% end -%>
 <%-# TODO: This should probably be in Puppet too -%>
 <%- if @host.param_true?('set-rhel-release') -%>
+yum -t -y update subscription-manager
 subscription-manager release --set=<%= @host.operatingsystem.release %>
 subscription-manager release --show
 <%- # Try and force repo URL refresh -%>
