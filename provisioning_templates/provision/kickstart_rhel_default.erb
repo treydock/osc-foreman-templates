@@ -113,7 +113,9 @@ ntp
 wget
 @Core
 sssd
+<%- if @host.operatingsystem.major == '7' -%>
 sssd-tools
+<%- end -%>
 epel-release
 puppet
 <%= section_end -%>
@@ -180,6 +182,10 @@ subscription-manager repos --disable rhel-7-fast-datapath-rpms
 # Yum proxy
 echo 'proxy = <%= proxy_uri %>' >> /etc/yum.conf
 <% end -%>
+
+<%- if @host.operatingsystem.major != '7' -%>
+yum -t -y install sssd-tools
+<%- end -%>
 
 # update all the base packages from the updates repository
 <%- unless @host.param_false?('kickstart-yum-update') -%>
