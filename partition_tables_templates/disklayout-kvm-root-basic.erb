@@ -1,0 +1,13 @@
+<%#
+kind: ptable
+name: OSC - root - KVM basic
+oses:
+- CentOS
+- Fedora
+- RedHat
+- RHEL Server
+%>
+
+ignoredisk --only-use=vda
+zerombr
+clearpart --all --initlabel --linux --drives=vda
