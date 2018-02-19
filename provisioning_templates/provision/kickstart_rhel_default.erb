@@ -142,7 +142,7 @@ exec < /dev/tty3 > /dev/tty3
 /usr/bin/chvt 3
 (
 <% if subnet.respond_to?(:dhcp_boot_mode?) -%>
-<%= snippet 'kickstart_networking_setup' %>
+<%= snippet 'osc_kickstart_networking_setup' %>
 <% end -%>
 
 # Update URLs used for repositories
@@ -200,7 +200,7 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-<%= bond_name %>_slave*
 <% if host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppetlabs-repo') || host_param_true?('enable-puppetlabs-puppet5-repo') -%>
 <%= snippet 'puppetlabs_repo' %>
 <% end -%>
-<%= snippet 'puppet_setup' %>
+<%= snippet 'osc_puppet_setup' %>
 <% end -%>
 
 sync

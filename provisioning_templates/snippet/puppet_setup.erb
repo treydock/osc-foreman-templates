@@ -1,6 +1,6 @@
 <%#
 kind: snippet
-name: puppet_setup
+name: osc_puppet_setup
 description: this snippet will configure the Puppet agent
 %>
 <%
@@ -66,11 +66,11 @@ Start-Process 'msiexec.exe' -ArgumentList $puppet_install_args -Wait -NoNewWindo
 <% end -%>
 
 <% if os_family == 'Windows' -%>
-$puppet_conf = @("<%= snippet 'puppet.conf' %>".Replace("`n","`r`n"))
+$puppet_conf = @("<%= snippet 'osc_puppet.conf' %>".Replace("`n","`r`n"))
 Out-File -FilePath <%= etc_path %>\puppet.conf -InputObject $puppet_conf
 <% else -%>
 cat > <%= etc_path %>/puppet.conf << EOF
-<%= snippet 'puppet.conf' %>
+<%= snippet 'osc_puppet.conf' %>
 EOF
 <% end -%>
 

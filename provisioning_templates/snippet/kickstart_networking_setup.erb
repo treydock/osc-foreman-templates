@@ -9,8 +9,8 @@ kind: snippet
 <%- @host.bond_interfaces.each do |bond| -%>
 <%-   bonding_interfaces.push(bond.identifier) -%>
 <%=   "# #{bond.identifier} interface" %>
-<%=   snippet('kickstart_ifcfg_get_identifier_names', :variables => { :identifier => bond.identifier }) %>
-<%-   ifcfg = snippet('kickstart_ifcfg_bond_interface', :variables => {
+<%=   snippet('osc_kickstart_ifcfg_get_identifier_names', :variables => { :identifier => bond.identifier }) %>
+<%-   ifcfg = snippet('osc_kickstart_ifcfg_bond_interface', :variables => {
                         :interface => bond,
                         :subnet => bond.subnet,
                         :subnet6 => bond.subnet6,
@@ -20,8 +20,8 @@ kind: snippet
 <%-   @host.interfaces_with_identifier(bond.attached_devices_identifiers).each do |interface| -%>
 <%-     next if !interface.managed? -%>
 <%=     "# #{interface.identifier} interface" %>
-<%=     snippet('kickstart_ifcfg_get_identifier_names', :variables => { :interface => interface }) -%>
-<%-     ifcfg = snippet('kickstart_ifcfg_bonded_interface', :variables => {
+<%=     snippet('osc_kickstart_ifcfg_get_identifier_names', :variables => { :interface => interface }) -%>
+<%-     ifcfg = snippet('osc_kickstart_ifcfg_bonded_interface', :variables => {
                           :interface => interface,
                           :subnet => interface.subnet,
                           :subnet6 => interface.subnet6,
@@ -37,8 +37,8 @@ kind: snippet
 <%-   next if bonded_interfaces.include?(interface.identifier) -%>
 
 <%=   "# #{interface.identifier} interface" %>
-<%=   snippet('kickstart_ifcfg_get_identifier_names', :variables => { :interface => interface }) -%>
-<%-   ifcfg = snippet('kickstart_ifcfg_generic_interface', :variables => {
+<%=   snippet('osc_kickstart_ifcfg_get_identifier_names', :variables => { :interface => interface }) -%>
+<%-   ifcfg = snippet('osc_kickstart_ifcfg_generic_interface', :variables => {
                         :interface => interface,
                         :subnet => interface.subnet,
                         :subnet6 => interface.subnet6,
