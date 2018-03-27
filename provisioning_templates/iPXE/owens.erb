@@ -19,8 +19,8 @@ elsif @nfsroot_rw
 end
 
 append << "console=tty"
-if @host.params['console_tty']
-  append << "console=#{@host.params['console_tty']},115200"
+if host_param('console_tty')
+  append << "console=#{host_param('console_tty')},115200"
 else
   append << "console=ttyS0,115200"
 end

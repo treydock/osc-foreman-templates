@@ -22,8 +22,8 @@ console = []
 if @host.present?
   if @host.provider == 'BareMetal'
     console << "console=tty"
-    if @host.params['console_tty']
-      console << "console=#{@host.params['console_tty']},115200"
+    if host_param('console_tty')
+      console << "console=#{host_param('console_tty')},115200"
     else
       console << "console=ttyS0,115200"
     end

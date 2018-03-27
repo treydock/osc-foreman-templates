@@ -59,7 +59,7 @@ oses:
 
   if @host.provider == 'BareMetal'
     options << "console=tty"
-    if @host.params['console_tty']
+    if host_param('console_tty')
       options << "console=#{@console_tty},#{@console_baud}"
     else
       options << "console=ttyS0,115200"

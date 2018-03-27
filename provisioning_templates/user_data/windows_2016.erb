@@ -1049,7 +1049,7 @@ identity:
       computerName: <%= @host.shortname %>
       fullName: 'OSC'
       orgName: 'Ohio Supercomputer Center'
-      productId: '<%= @host.params['windows_key'] %>'
+      productId: '<%= host_param('windows_key') %>'
 nicSettingMap:
   - adapter:
       dnsDomain: <%= @host.domain %>

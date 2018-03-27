@@ -70,8 +70,8 @@ oses:
     @nfsroot_interfaces.split(',').each do |interface|
       append << "ip=#{interface}"
     end
-    if @host.params['extra_kernel_command_line']
-      append << @host.params['extra_kernel_command_line']
+    if host_param('extra_kernel_command_line')
+      append << host_param('extra_kernel_command_line')
     end
   # Glenn specific tweaks
   elsif @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/glenn/

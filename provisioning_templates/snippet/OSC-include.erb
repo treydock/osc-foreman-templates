@@ -9,11 +9,11 @@ oses:
 %>
 <%# This template defines useful variables to use else where %>
 <%-
-@tftp_boot_prefix = @host.params['tftp_boot_prefix'] || ''
-@local_boot_template = @host.params['local_boot_template'] || 'local'
-@local_boot_default = @host.params['local_boot_default'] || 'local'
-@console_tty = @host.params['console_tty'] || 'ttyS0'
-@console_baud = @host.params['console_baud'] || '115200'
+@tftp_boot_prefix = host_param('tftp_boot_prefix') || ''
+@local_boot_template = host_param('local_boot_template') || 'local'
+@local_boot_default = host_param('local_boot_default') || 'local'
+@console_tty = host_param('console_tty') || 'ttyS0'
+@console_baud = host_param('console_baud') || '115200'
 @pxelinux_menu = true
 # Only affects RHEL7
 @use_eth_interfaces = @host.param_true?('use_eth_interfaces')
@@ -35,13 +35,11 @@ end
   'base/ruby/login',
   'base/oakley/compute',
   'base/oakley/login',
-  'base/glenn',
 ]
 @nfsroot_rw_hostgroups = [
   'base/owens/rw',
   'base/ruby/rw',
   'base/oakley/rw',
-  'base/glenn/rw',
 ]
 @nfsroot_ro_hosts = [
 
@@ -72,42 +70,34 @@ if @nfsroot
   @local_boot_template = "OSC - PXELinux NFS root"
   @local_boot_default = "nfsroot"
   if @host.hostgroup.to_s =~ /owens/
-    @nfsroot_host   = @host.params['nfsroot_host'] || 'owens_root.ten.osc.edu'
-    @nfsroot_path   = @host.params['nfsroot_path'] || '/owens_root_rhel72_0'
-    @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
-    @nfsroot_bridges = @host.params['nfsroot_bridges'] || ''
-    @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || ''
+    @nfsroot_host   = host_param('nfsroot_host') || 'owens_root.ten.osc.edu'
+    @nfsroot_path   = host_param('nfsroot_path') || '/owens_root_rhel72_0'
+    @nfsroot_opts   = host_param('nfsroot_opts') || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
+    @nfsroot_bridges = host_param('nfsroot_bridges') || ''
+    @nfsroot_interfaces = host_param('nfsroot_interfaces') || ''
   elsif @host.hostgroup.to_s =~ /ruby/
-    @nfsroot_host   = @host.params['nfsroot_host'] || 'ruby_root.ten.osc.edu'
-    @nfsroot_path   = @host.params['nfsroot_path'] || '/ruby_root_rhel68_1'
-    @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=32768,wsize=32768'
-    @nfsroot_bridges = @host.params['nfsroot_bridges'] || 'br0:eth0'
-    @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || 'br0:dhcp'
+    @nfsroot_host   = host_param('nfsroot_host') || 'ruby_root.ten.osc.edu'
+    @nfsroot_path   = host_param('nfsroot_path') || '/ruby_root_rhel68_1'
+    @nfsroot_opts   = host_param('nfsroot_opts') || 'vers=3,tcp,rw,nfsvers=3,async,rsize=32768,wsize=32768'
+    @nfsroot_bridges = host_param('nfsroot_bridges') || 'br0:eth0'
+    @nfsroot_interfaces = host_param('nfsroot_interfaces') || 'br0:dhcp'
     @pxelinux_menu = false
   elsif @host.hostgroup.to_s =~ /oakley/
-    @nfsroot_host   = @host.params['nfsroot_host'] || 'oakley_root.ten.osc.edu'
-    @nfsroot_path   = @host.params['nfsroot_path'] || '/oakley_root_rhel68_2'
-    @nfsroot_opts   = @host.params['nfsroot_opts'] || 'vers=3,tcp,rw,nfsvers=3,async,rsize=32768,wsize=32768'
-    @nfsroot_bridges = @host.params['nfsroot_bridges'] || 'br0:eth0'
-    @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || 'br0:dhcp'
+    @nfsroot_host   = host_param('nfsroot_host') || 'oakley_root.ten.osc.edu'
+    @nfsroot_path   = host_param('nfsroot_path') || '/oakley_root_rhel68_2'
+    @nfsroot_opts   = host_param('nfsroot_opts') || 'vers=3,tcp,rw,nfsvers=3,async,rsize=32768,wsize=32768'
+    @nfsroot_bridges = host_param('nfsroot_bridges') || 'br0:eth0'
+    @nfsroot_interfaces = host_param('nfsroot_interfaces') || 'br0:dhcp'
     @pxelinux_menu = false
-  elsif @host.hostgroup.to_s =~ /glenn/
-    #@nfsroot_host   = @host.params['nfsroot_host'] || '192.148.250.21'
-    #@nfsroot_path   = @host.params['nfsroot_path'] || '/cts11/5.11.3'
-    @nfsroot_host   = @host.params['nfsroot_host'] || '10.11.200.3'
-    @nfsroot_path   = @host.params['nfsroot_path'] || '/glenn_root_prod'
-    @nfsroot_opts   = @host.params['nfsroot_opts'] || ''
-    @nfsroot_bridges = @host.params['nfsroot_bridges'] || ''
-    @nfsroot_interfaces = @host.params['nfsroot_interfaces'] || ''
   end
 
-  @nfsroot_kernel_version = @host.params['nfsroot_kernel_version']
+  @nfsroot_kernel_version = host_param('nfsroot_kernel_version')
   if @nfsroot_kernel_version
-    @nfsroot_kernel = @host.params['nfsroot_kernel'] || "nfsroot/vmlinuz-#{@nfsroot_kernel_version}"
-    @nfsroot_initrd = @host.params['nfsroot_initrd'] || "nfsroot/initramfs-#{@nfsroot_kernel_version}.img"
+    @nfsroot_kernel = host_param('nfsroot_kernel') || "nfsroot/vmlinuz-#{@nfsroot_kernel_version}"
+    @nfsroot_initrd = host_param('nfsroot_initrd') || "nfsroot/initramfs-#{@nfsroot_kernel_version}.img"
   else
-    @nfsroot_kernel = @host.params['nfsroot_kernel'] || @kernel
-    @nfsroot_initrd = @host.params['nfsroot_initrd'] || @initrd
+    @nfsroot_kernel = host_param('nfsroot_kernel') || @kernel
+    @nfsroot_initrd = host_param('nfsroot_initrd') || @initrd
   end
 end
 
