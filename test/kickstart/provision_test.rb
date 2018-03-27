@@ -81,10 +81,6 @@ class TestKickstartProvision < MiniTest::Test
     validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '5', '11', 'base/tsm_legacy', 'OSC - TSM legacy PXELinux', 'default')
   end
 
-  def test_glenn
-    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '5', '11', 'base/glenn')
-  end
-
   def test_default
     validate_template('provisioning_templates/PXELinux/pxelinux_global_default.erb', nil, nil, nil, nil, nil, false)
   end

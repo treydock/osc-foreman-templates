@@ -72,15 +72,6 @@ oses:
     if host_param('extra_kernel_command_line')
       append << host_param('extra_kernel_command_line')
     end
-  # Glenn specific tweaks
-  elsif @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/glenn/
-    extra_labels = {
-      'single' => 'single',
-      'rebuild' => 'rebuild',
-      'initramfs' => 'ramfsinit=1',
-    }
-    append << "mtu=9000"
-    append << "nmi_watchdog=1"
   # Owens & generic tweaks
   else
     extra_labels = {}
