@@ -16,7 +16,7 @@ oses:
 @console_baud = host_param('console_baud') || '115200'
 @pxelinux_menu = true
 # Only affects RHEL7
-@use_eth_interfaces = @host.param_true?('use_eth_interfaces')
+@use_eth_interfaces = host_param_true?('use_eth_interfaces')
 if @use_eth_interfaces
   @eth_interfaces_kernel = 'net.ifnames=0 biosdevname=0'
 else

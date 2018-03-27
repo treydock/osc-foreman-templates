@@ -30,7 +30,7 @@ This template accepts the following parameters:
   pm_set = @host.puppetmaster.empty? ? false : true
   proxy_uri = host_param('http-proxy') ? "http://#{host_param('http-proxy')}:#{host_param('http-proxy-port')}" : nil
   proxy_string = proxy_uri ? " --proxy=#{proxy_uri}" : ''
-  puppet_enabled = pm_set || @host.param_true?('force-puppet')
+  puppet_enabled = pm_set || host_param_true?('force-puppet')
   salt_enabled = host_param('salt_master') ? true : false
   chef_enabled = @host.respond_to?(:chef_proxy) && @host.chef_proxy
   section_end = os_major <= 5 ? '' : '%end'
@@ -162,7 +162,7 @@ echo "updating system time"
 <%= snippet 'OSC-redhat_register' %>
 <% end -%>
 <%-# TODO: This should probably be in Puppet too -%>
-<%- if @host.param_true?('set-rhel-release') -%>
+<%- if host_param_true?('set-rhel-release') -%>
 yum -t -y update subscription-manager
 subscription-manager release --set=<%= @host.operatingsystem.release %>
 subscription-manager release --show
@@ -187,7 +187,7 @@ yum -t -y install sssd-tools
 <%- end -%>
 
 # update all the base packages from the updates repository
-<%- unless @host.param_false?('kickstart-yum-update') -%>
+<%- unless host_param_false?('kickstart-yum-update') -%>
 yum -t -y update
 <%- end -%>
 
