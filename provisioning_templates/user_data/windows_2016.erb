@@ -1025,8 +1025,8 @@ identity:
   Sysprep:
     guiRunOnce:
       commandList:
-#        - '<%= powershell %> -Command "invoke-webrequest -Uri https://raw.githubusercontent.com/bechtoldt/puppet-bootstrap/master/windows.ps1 -Outfile c:\puppet-windows.ps1"'
-#        - '<%= powershell %> -Command "& \'.\windows.ps1 -PuppetVersion 3.7.5\'"'
+        - '<%= powershell %> -Command "invoke-webrequest -Uri https://repo.hpc.osc.edu/internal/install_puppet.ps1 -Outfile C:\install_puppet.ps1"'
+        - '<%= powershell %> -Command "& \'.\install_puppet.ps1 <%= @host.name %>\'"'
         - '<%= powershell %> -Command "invoke-webrequest -Uri <%= foreman_url("built") %>"'
     guiUnattended:
       autoLogon: true
