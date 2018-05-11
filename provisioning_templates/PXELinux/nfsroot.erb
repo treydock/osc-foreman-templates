@@ -82,6 +82,10 @@ oses:
     }
     append << "mtu=9000"
     append << "nmi_watchdog=1"
+  # Pitzer
+  elsif @host.hostgroup.present? && @host.hostgroup.to_s =~ /base\/pitzer/
+    extra_labels = {}
+    append << "ip=#{@provision_interface_identifier}:dhcp:9000"
   # Owens & generic tweaks
   else
     extra_labels = {}
