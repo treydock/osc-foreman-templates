@@ -41,6 +41,18 @@ class TestKickstartProvision < MiniTest::Test
     validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2')
   end
 
+  def test_nfsroot_ro_pitzer_compute
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '5', 'base/pitzer/compute')
+  end
+
+  def test_nfsroot_ro_pitzer_login
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '5', 'base/pitzer/login')
+  end
+
+  def test_nfsroot_rw_pitzer
+    validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '5', 'base/pitzer/rw')
+  end
+
   def test_nfsroot_ro_owens_compute
     validate_template('provisioning_templates/PXELinux/pxelinux_default_local_boot.erb', '7', '2', 'base/owens/compute')
   end

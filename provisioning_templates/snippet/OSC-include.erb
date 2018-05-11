@@ -29,6 +29,8 @@ else
 end
 
 @nfsroot_ro_hostgroups = [
+  'base/pitzer/compute',
+  'base/pitzer/login',
   'base/owens/compute',
   'base/owens/login',
   'base/ruby/compute',
@@ -37,6 +39,7 @@ end
   'base/oakley/login',
 ]
 @nfsroot_rw_hostgroups = [
+  'base/pitzer/rw',
   'base/owens/rw',
   'base/ruby/rw',
   'base/oakley/rw',
@@ -69,7 +72,13 @@ end
 if @nfsroot
   @local_boot_template = "OSC - PXELinux NFS root"
   @local_boot_default = "nfsroot"
-  if @host.hostgroup.to_s =~ /owens/
+  if @host.hostgroup.to_s =~ /pitzer/
+    @nfsroot_host   = host_param('nfsroot_host') || 'pitzer_root.ten.osc.edu'
+    @nfsroot_path   = host_param('nfsroot_path') || '/pitzer_root_rhel75_0'
+    @nfsroot_opts   = host_param('nfsroot_opts') || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
+    @nfsroot_bridges = host_param('nfsroot_bridges') || ''
+    @nfsroot_interfaces = host_param('nfsroot_interfaces') || ''
+  elsif @host.hostgroup.to_s =~ /owens/
     @nfsroot_host   = host_param('nfsroot_host') || 'owens_root.ten.osc.edu'
     @nfsroot_path   = host_param('nfsroot_path') || '/owens_root_rhel72_0'
     @nfsroot_opts   = host_param('nfsroot_opts') || 'vers=3,tcp,rw,nfsvers=3,async,rsize=65536,wsize=65536'
