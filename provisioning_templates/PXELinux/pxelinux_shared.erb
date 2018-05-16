@@ -35,9 +35,20 @@ LABEL rescue
         KERNEL <%= @tftp_boot_prefix %>rhel-7.5-boot/images/pxeboot/vmlinuz
         APPEND initrd=<%= @tftp_boot_prefix %>rhel-7.5-boot/images/pxeboot/initrd.img inst.stage2=<%= @tftp_boot_prefix %>rhel-7.5-boot <%= console %> rescue
         MENU LABEL Rescue Installed System
+
+LABEL centos-7-livecd-console
+        KERNEL <%= @tftp_boot_prefix %>centos-7-livecd/vmlinuz0
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-x86_64-LiveGNOME-1804.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 <%= console %> init 3
+        MENU LABEL CentOS 7 LiveCD CONSOLE
+
+LABEL centos-6-livecd-console
+        KERNEL <%= @tftp_boot_prefix %>centos-6-livecd/vmlinuz0
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-6-livecd/initrd0.img root=live:/centos6-live.iso rootfstype=auto ro liveimg nodiskmount nolvmmount rd_NO_LUKS rd_NO_MD rd_NO_DM <%= console %> init 3
+        MENU LABEL CentOS 6 LiveCD CONSOLE
+
 LABEL centos-7-livecd
         KERNEL <%= @tftp_boot_prefix %>centos-7-livecd/vmlinuz0
-        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-livecd-x86_64.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 <%= console %>
+        APPEND rootflags=loop initrd=<%= @tftp_boot_prefix %>centos-7-livecd/initrd0.img root=live:/CentOS-7-x86_64-LiveGNOME-1804.iso rootfstype=auto ro rd.live.image rd.luks=0 rd.md=0 rd.dm=0 <%= console %>
         MENU LABEL CentOS 7 LiveCD
 
 LABEL centos-6-livecd
