@@ -114,7 +114,6 @@ LABEL nfsroot
 <%- if @nfsroot_rw -%>
 LABEL local
      MENU LABEL (local)
-     MENU DEFAULT
      LOCALBOOT <%= host_param('pxelinux_localboot_value') || 0 %>
 <%- end -%>
 <%- extra_labels.each_pair do |label, extra_append| -%>
