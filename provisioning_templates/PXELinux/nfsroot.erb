@@ -111,6 +111,12 @@ LABEL nfsroot
     KERNEL <%= "#{@tftp_boot_prefix}#{@nfsroot_kernel}" %>
     APPEND <%= append %>
     MENU DEFAULT
+<%- if @nfsroot_rw -%>
+LABEL local
+     MENU LABEL (local)
+     MENU DEFAULT
+     LOCALBOOT <%= host_param('pxelinux_localboot_value') || 0 %>
+<%- end -%>
 <%- extra_labels.each_pair do |label, extra_append| -%>
 LABEL <%= label %>
     KERNEL <%= "#{@tftp_boot_prefix}#{@nfsroot_kernel}" %>
