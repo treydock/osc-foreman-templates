@@ -1026,7 +1026,7 @@ identity:
     guiRunOnce:
       commandList:
         - '<%= powershell %> -Command "invoke-webrequest -Uri https://repo.hpc.osc.edu/internal/install_puppet.ps1 -Outfile C:\install_puppet.ps1"'
-        - "<%= powershell %> -Command \"& '.\\install_puppet.ps1 <%= @host.name %>'\""
+        - "<%= powershell.gsub(/\\/,'\&\&') %> -Command \"& '.\\install_puppet.ps1 <%= @host.name %>'\""
         - '<%= powershell %> -Command "invoke-webrequest -Uri <%= foreman_url("built") %>"'
     guiUnattended:
       autoLogon: true
