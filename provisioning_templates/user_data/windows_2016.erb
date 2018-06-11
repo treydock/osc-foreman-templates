@@ -1025,8 +1025,11 @@ identity:
   Sysprep:
     guiRunOnce:
       commandList:
+#        - >
+#          <%= powershell %> -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
         - '<%= powershell %> -Command "invoke-webrequest -Uri https://repo.hpc.osc.edu/internal/install_puppet.ps1 -Outfile C:\install_puppet.ps1"'
         - '<%= powershell %> -file C:\install_puppet.ps1 <%= @host.name %>'
+        - 'C:\Program Files\Puppet Labs\Puppet\bin\puppet.bat agent --test'
         - '<%= powershell %> -Command "invoke-webrequest -Uri <%= foreman_url("built") %>"'
     guiUnattended:
       autoLogon: true
